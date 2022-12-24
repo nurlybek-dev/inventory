@@ -28,9 +28,9 @@ LIBS =
 
 ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
-	LIBS += -lGL -ldl `sdl2-config --libs`
+	LIBS += -lGL -ldl -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
 
-	CXXFLAGS += `sdl2-config --cflags`
+	CXXFLAGS += -I/usr/include/
 	CFLAGS = $(CXXFLAGS)
 endif
 
