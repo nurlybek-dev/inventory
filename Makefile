@@ -14,9 +14,9 @@
 #CXX = g++
 #CXX = clang++
 
-EXE = game 
-SOURCES = $(wildcard *.cpp)
-OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
+EXE = build/game 
+SOURCES = $(wildcard src/*.cpp)
+OBJS = $(patsubst src/%.cpp,build/%.o,$(SOURCES))
 UNAME_S := $(shell uname -s)
 
 CXXFLAGS = -std=c++17 -Iinclude
@@ -55,16 +55,16 @@ endif
 ##---------------------------------------------------------------------
 ## BUILD RULES
 ##---------------------------------------------------------------------
-%.o:%.cpp
+build/%.o:%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:src/%.cpp
+build/%.o:src/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(IMGUI_DIR)/%.cpp
+build/%.o:$(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(IMGUI_DIR)/backends/%.cpp
+build/%.o:$(IMGUI_DIR)/backends/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 all: $(EXE)

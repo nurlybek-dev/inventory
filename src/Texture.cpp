@@ -48,6 +48,16 @@ SDL_Rect Texture::Pos()
     return mPos;
 }
 
+int Texture::GetWeight()
+{
+    return mPos.w;
+}
+
+int Texture::GetHeight()
+{
+    return mPos.h;
+}
+
 void Texture::Render()
 {
     RenderManager::Instance()->RenderTexture(mTexture, mIsClipped ? &mClip : nullptr, &mPos);

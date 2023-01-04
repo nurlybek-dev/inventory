@@ -11,7 +11,6 @@ Item::Item(std::string name, std::string iconPath, ItemType itemType)
 
 Item::~Item()
 {
-    // SDL_Log("Delete item %s\n", mName.c_str());
     delete mTexture;
     mTexture = nullptr;
 }

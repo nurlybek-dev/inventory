@@ -75,6 +75,7 @@ void EquipmentSlot::Input(SDL_Event event)
 Equipment::Equipment(Character* character)
 {
     mBackground = new Texture("assets/Equipment.png", 220, 0);
+    mBackground->SetPos(220, SCREEN_HEIGHT - mBackground->GetHeight() - 32);
     mCharacter = character;
 
     mEquipments[HELM] = new EquipmentSlot(HELM, this);
@@ -82,10 +83,10 @@ Equipment::Equipment(Character* character)
     mEquipments[RIGHT_HAND] = new EquipmentSlot(RIGHT_HAND, this);
     mEquipments[BOOT] = new EquipmentSlot(BOOT, this);
 
-    mEquipments[HELM]->SetPos(210+31, 4);
-    mEquipments[LEFT_HAND]->SetPos(210+14, 38);
-    mEquipments[RIGHT_HAND]->SetPos(210+48, 38);
-    mEquipments[BOOT]->SetPos(210+31, 72);
+    mEquipments[HELM]->SetPos(mBackground->Pos().x + 21, mBackground->Pos().y + 4);
+    mEquipments[LEFT_HAND]->SetPos(mBackground->Pos().x + 4, mBackground->Pos().y + 38);
+    mEquipments[RIGHT_HAND]->SetPos(mBackground->Pos().x + 38, mBackground->Pos().y + 38);
+    mEquipments[BOOT]->SetPos(mBackground->Pos().x + 21, mBackground->Pos().y + 72);
 }
 
 Equipment::~Equipment()

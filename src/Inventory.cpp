@@ -89,17 +89,18 @@ void InventorySlot::Input(SDL_Event event)
 Inventory::Inventory(Character* character)
 {
     mCharacter = character;
+    mBackground = new Texture("assets/Inventory.png", 0, 0);
+    mBackground->SetPos(0, SCREEN_HEIGHT - mBackground->GetHeight() - 32);
+
     mSlots.clear();
     int x = 0;
     int y = 0;
     for(int i=0; i<30; i++) {
-        x = i%6 * 32 + 4 + i%6 * 2;
-        y = i/6 * 32 + 2 + 16 + 1 + 2 + i/6 * 2;
+        x = mBackground->Pos().x + i%6 * 32 + 4 + i%6 * 2;
+        y = mBackground->Pos().y + i/6 * 32 + 2 + 16 + 1 + 2 + i/6 * 2;
         mSlots.push_back(new InventorySlot(i, this));
         mSlots[i]->SetPos(x, y);
     }
-
-    mBackground = new Texture("assets/inventory.png", 0, 0);
 
     Item* item1 = new Item("Crossbow", "assets/PNG/crossbow.png", LEFT_HAND);
     item1->Description("Crossbow can shoot");

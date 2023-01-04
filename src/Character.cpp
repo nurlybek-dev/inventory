@@ -48,7 +48,6 @@ void Character::Input(SDL_Event event)
 
 void Character::Render()
 {
-    mIcon->Render();
     if(mActive)
     {
         mEquipment->Render();
@@ -56,6 +55,7 @@ void Character::Render()
         mEquipment->RenderItems();
         mInventory->RenderItems();
     }
+    mIcon->Render();
 }
 
 void Character::SetActive(bool value)

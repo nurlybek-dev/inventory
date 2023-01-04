@@ -22,11 +22,6 @@ int Stats::GetStat(StatType stat)
 void Stats::AddStat(StatType stat, int value)
 {
     mStats[stat] += value;
-
-    SDL_Log("--------\n");
-    SDL_Log("HEALTH: %d\n", mStats[HEALTH]);
-    SDL_Log("DAMAGE: %d\n", mStats[DAMAGE]);
-    SDL_Log("ARMOR: %d\n", mStats[ARMOR]);
 }
 
 Character* Stats::GetCharacter()

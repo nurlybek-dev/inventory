@@ -18,6 +18,9 @@ class Texture
         void SetWidth(int w);
         void SetHeight(int h);
 
+        int GetWeight();
+        int GetHeight();
+
         void Render();
 
     private:
