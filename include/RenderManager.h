@@ -29,6 +29,7 @@ class RenderManager
         void Render();
         void RenderTexture(SDL_Texture* texture, SDL_Rect *pos, SDL_Rect *clip);
         void RenderText(std::string text, SDL_Rect pos);
+        void RenderWrappedText(std::string text, SDL_Rect pos, Uint32 wrapLength);
 
     private:
         static RenderManager* sInstance;

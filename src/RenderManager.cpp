@@ -108,6 +108,29 @@ void RenderManager::RenderText(std::string text, SDL_Rect srcrect)
     SDL_DestroyTexture(newTexture);
 }
 
+void RenderManager::RenderWrappedText(std::string text, SDL_Rect srcrect, Uint32 wrapLength)
+{
+    SDL_Texture *newTexture = nullptr;
+
+    SDL_Surface *loadedSurface = TTF_RenderText_Blended_Wrapped(mFont, text.c_str(), {255, 255, 255, 255}, wrapLength);
+    if(loadedSurface == nullptr)
+    {
+        SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
+    }
+    else
+    {
+        newTexture = SDL_CreateTextureFromSurface(mRenderer, loadedSurface);
+        if( newTexture == nullptr )
+        {
+            SDL_Log( "Unable to create text from %s! SDL Error: %s\n", text.c_str(), SDL_GetError() );
+        }
+
+        SDL_FreeSurface(loadedSurface);
+    }
+    SDL_RenderCopy(mRenderer, newTexture, nullptr, &srcrect);
+    SDL_DestroyTexture(newTexture);
+}
+
 SDL_Texture* RenderManager::LoadTexture(std::string path)
 {
     SDL_Texture* texture = nullptr;
