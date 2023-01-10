@@ -7,6 +7,7 @@
 #include "Tooltip.h"
 #include "Character.h"
 #include "Panel.h"
+#include "DialogueManager.h"
 
 
 bool init();
@@ -18,6 +19,7 @@ Character* gCharacter;
 Panel* gLeftPanel;
 Panel* gTopPanel;
 Panel* gBottomPanel;
+DialogueManager* gDialogueManager;
 
 int main(int, char**) {
     if(init()) {
@@ -27,7 +29,7 @@ int main(int, char**) {
         gLeftPanel = new Panel(200, SCREEN_HEIGHT);
         gTopPanel = new Panel(600, 350);
         gBottomPanel = new Panel(600, 250);
-
+        gDialogueManager = new DialogueManager();
         gLeftPanel->SetPos(0, 0);
         gTopPanel->SetPos(200, 0);
         gBottomPanel->SetPos(200, 350);
@@ -61,35 +63,22 @@ void loop() {
                 gCharacter->SetActive(!gCharacter->Active());
             }
             if(gCharacter->Active()) gCharacter->Input(event);
+            gDialogueManager->Input(event);
         }
+
+        if(gDialogueManager->IsEnd()) {
+            SDL_Log("GAME OVER!");
+            running = false;
+            continue;
+        }
+
+        gDialogueManager->Update();
 
         gRenderManager->Clear();
         gLeftPanel->Render();
         gTopPanel->Render();
         gBottomPanel->Render();
-
-        std::string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ut pretium ex. Mauris turpis arcu, luctus at sodales sed, venenatis ut augue. Phasellus aliquet, nulla sit amet fringilla commodo, risus erat fringilla orci, et fermentum diam ante mollis nisi. Integer eget nulla orci. Aliquam dapibus venenatis mattis.";
-
-        int l = text.size() * 24;
-        int w = 0;
-        int h = 0;
-
-        if(l > 580) {
-            w = 580;
-            h = (l / 580) * 24;
-        } else {
-            w = l;
-            h = 24;
-        }
-
-        gRenderManager->RenderWrappedText(text, {210, 10, w, h}, w);
-
-        for(int i = 1; i <= 5; i++) {
-            gRenderManager->RenderText(std::to_string(i) + ".", {210, 360 + ((i-1) * 24), 48, 24});
-            std::string choice = "Choice " + std::to_string(i);
-            int cw = choice.size()*24;
-            gRenderManager->RenderWrappedText(choice, {210+48, 360 + ((i-1) * 24), cw, 24}, cw);
-        }
+        gDialogueManager->Render();
 
         // gCharacter->Render();
 

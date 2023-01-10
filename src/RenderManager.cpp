@@ -62,7 +62,7 @@ bool RenderManager::Init()
                 success = false;
             }
 
-            mFont = TTF_OpenFont("assets/kenvector_future.ttf", 24);
+            mFont = TTF_OpenFont("assets/kenvector_future.ttf", FONT_SIZE);
         }
     }
 
@@ -85,9 +85,10 @@ void RenderManager::RenderTexture(SDL_Texture* texture, SDL_Rect *srcrect, SDL_R
     SDL_RenderCopy(mRenderer, texture, srcrect, dstrect);
 }
 
-void RenderManager::RenderText(std::string text, SDL_Rect srcrect)
+SDL_Rect RenderManager::RenderText(std::string text, int x, int y)
 {
     SDL_Texture *newTexture = nullptr;
+    SDL_Rect srcrect = {x, y, 0, 0};
 
     SDL_Surface *loadedSurface = TTF_RenderText_Solid(mFont, text.c_str(), {255, 255, 255, 255});
     if(loadedSurface == nullptr)
@@ -101,18 +102,24 @@ void RenderManager::RenderText(std::string text, SDL_Rect srcrect)
         {
             SDL_Log( "Unable to create text from %s! SDL Error: %s\n", text.c_str(), SDL_GetError() );
         }
+        int w, h;
+        SDL_QueryTexture(newTexture, nullptr, nullptr, &w, &h);
+        srcrect.w = w;
+        srcrect.h = h;
 
         SDL_FreeSurface(loadedSurface);
     }
     SDL_RenderCopy(mRenderer, newTexture, nullptr, &srcrect);
     SDL_DestroyTexture(newTexture);
+    return srcrect;
 }
 
-void RenderManager::RenderWrappedText(std::string text, SDL_Rect srcrect, Uint32 wrapLength)
+SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength)
 {
     SDL_Texture *newTexture = nullptr;
-
-    SDL_Surface *loadedSurface = TTF_RenderText_Blended_Wrapped(mFont, text.c_str(), {255, 255, 255, 255}, wrapLength);
+    SDL_Rect srcrect = {x, y, 0, 0};
+    SDL_Surface *loadedSurface = TTF_RenderText_Solid_Wrapped(mFont, text.c_str(), {255, 255, 255, 255}, wrapLength);
+    
     if(loadedSurface == nullptr)
     {
         SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
@@ -125,10 +132,16 @@ void RenderManager::RenderWrappedText(std::string text, SDL_Rect srcrect, Uint32
             SDL_Log( "Unable to create text from %s! SDL Error: %s\n", text.c_str(), SDL_GetError() );
         }
 
+        int w, h;
+        SDL_QueryTexture(newTexture, nullptr, nullptr, &w, &h);
+        srcrect.w = w;
+        srcrect.h = h;
+
         SDL_FreeSurface(loadedSurface);
     }
     SDL_RenderCopy(mRenderer, newTexture, nullptr, &srcrect);
     SDL_DestroyTexture(newTexture);
+    return srcrect;
 }
 
 SDL_Texture* RenderManager::LoadTexture(std::string path)

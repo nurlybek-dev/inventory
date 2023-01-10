@@ -79,12 +79,12 @@ void Tooltip::Render()
         mBackground->SetHeight(h);
         mBackground->Render();
 
-        RenderManager::Instance()->RenderText(mTitle, {x, y, 100, 24});
+        RenderManager::Instance()->RenderText(mTitle, x, y);
 
         for(int i=0; i < mEffects.size(); i++) {
-            RenderManager::Instance()->RenderText(mEffects[i], {x, y+((i+1)*24)+4, 100, 24});
+            RenderManager::Instance()->RenderText(mEffects[i], x, y+((i+1)*24)+4);
         }
 
-        RenderManager::Instance()->RenderText(mDescription, {x, y+(int)((mEffects.size()+1) * 24)+4, 100, 24});
+        RenderManager::Instance()->RenderText(mDescription, x, y+(int)((mEffects.size()+1) * 24)+4);
     }
 }

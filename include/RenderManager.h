@@ -3,6 +3,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+#define FONT_SIZE 24
 
 #include <string>
 #include <SDL2/SDL.h>
@@ -28,8 +29,8 @@ class RenderManager
         void Clear();
         void Render();
         void RenderTexture(SDL_Texture* texture, SDL_Rect *pos, SDL_Rect *clip);
-        void RenderText(std::string text, SDL_Rect pos);
-        void RenderWrappedText(std::string text, SDL_Rect pos, Uint32 wrapLength);
+        SDL_Rect RenderText(std::string text, int x, int y);
+        SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength);
 
     private:
         static RenderManager* sInstance;
