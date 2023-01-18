@@ -6,6 +6,7 @@
 #define FONT_SIZE 24
 
 #include <string>
+#include <map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -29,8 +30,9 @@ class RenderManager
         void Clear();
         void Render();
         void RenderTexture(SDL_Texture* texture, SDL_Rect *pos, SDL_Rect *clip);
-        SDL_Rect RenderText(std::string text, int x, int y);
-        SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength);
+        SDL_Rect RenderText(std::string text, int x, int y, int fontSize=24);
+        SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize=24);
+        TTF_Font* GetFont(std::string path, int size);
 
     private:
         static RenderManager* sInstance;
@@ -38,7 +40,7 @@ class RenderManager
         SDL_Window *mWindow;
         SDL_Renderer *mRenderer;
 
-        TTF_Font* mFont;
+        std::map<std::string, TTF_Font*> mFonts;
 };
 
 #endif

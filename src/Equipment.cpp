@@ -17,8 +17,10 @@ EquipmentSlot::~EquipmentSlot()
     delete mTexture;
     mTexture = nullptr;
 
-    delete mItem;
-    mItem = nullptr;
+    if(mItem) {
+        delete mItem;
+        mItem = nullptr;
+    }
 }
 
 bool EquipmentSlot::Equip(Item* item)
@@ -72,27 +74,36 @@ void EquipmentSlot::Input(SDL_Event event)
     }
 }
 
-Equipment::Equipment(Character* character)
+Equipment::Equipment(Character* character, int x, int y)
 {
-    mBackground = new Texture("assets/Equipment.png", 220, 0);
-    mBackground->SetPos(220, SCREEN_HEIGHT - mBackground->GetHeight() - 32);
+    // mBackground = new Texture("assets/Equipment.png", 220, 0);
+    mBackground = new Texture("assets/Inventory.png", {x, y, 108, 40}, {0, 0, 1, 1});
+    // mBackground->SetPos(220, SCREEN_HEIGHT - mBackground->GetHeight() - 32);
     mCharacter = character;
 
-    mEquipments[HELM] = new EquipmentSlot(HELM, this);
-    mEquipments[LEFT_HAND] = new EquipmentSlot(LEFT_HAND, this);
-    mEquipments[RIGHT_HAND] = new EquipmentSlot(RIGHT_HAND, this);
-    mEquipments[BOOT] = new EquipmentSlot(BOOT, this);
+    mEquipments[WEAPON] = new EquipmentSlot(WEAPON, this);
+    mEquipments[ARMOR] = new EquipmentSlot(ARMOR, this);
+    mEquipments[ARTIFACT] = new EquipmentSlot(ARTIFACT, this);
 
-    mEquipments[HELM]->SetPos(mBackground->Pos().x + 21, mBackground->Pos().y + 4);
-    mEquipments[LEFT_HAND]->SetPos(mBackground->Pos().x + 4, mBackground->Pos().y + 38);
-    mEquipments[RIGHT_HAND]->SetPos(mBackground->Pos().x + 38, mBackground->Pos().y + 38);
-    mEquipments[BOOT]->SetPos(mBackground->Pos().x + 21, mBackground->Pos().y + 72);
+    mEquipments[WEAPON]->SetPos(x + 4, y + 4);
+    mEquipments[ARMOR]->SetPos(x + 38, y + 4);
+    mEquipments[ARTIFACT]->SetPos(x + 72, y + 4);
 }
 
 Equipment::~Equipment()
 {
+    mCharacter = nullptr;
+
     delete mBackground;
     mBackground = nullptr;
+
+    for(auto && e : mEquipments)
+    {
+        delete e.second;
+        e.second = nullptr;
+    }
+
+    mEquipments.clear();
 }
 
 bool Equipment::Equip(Item* item)

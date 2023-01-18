@@ -8,28 +8,37 @@
 class Character
 {
     public:
-        Character(std::string iconPath, int x, int y);
+        enum CharacterTabs {
+            StatsTab,
+            InventoryTab,
+            JournalTab
+        };
+    public:
+        Character();
         ~Character();
 
         Inventory* GetInventory();
         Equipment* GetEquipment();
         Stats* GetStats();
 
+        void Update();
         void Input(SDL_Event event);
         void Render();
 
-        bool Active();
-        void SetActive(bool value);
-
-        SDL_Rect Pos();
+        Character::CharacterTabs Active();
+        void SetActive(Character::CharacterTabs tab);
 
     private:
-        Texture* mIcon;
         Inventory* mInventory;
         Equipment* mEquipment;
         Stats* mStats;
 
-        bool mActive;
+        Texture *mIconsBackground;
+        Texture *mStatsIcon;
+        Texture *mInventoryIcon;
+        Texture *mJournalIcon;
+
+        Character::CharacterTabs mActiveTab;
 };
 
 #endif

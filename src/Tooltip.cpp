@@ -46,13 +46,13 @@ void Tooltip::Show(Item* item)
     {
         switch (e.first)
         {
-        case HEALTH:
+        case Stats::HEALTH:
             mEffects.push_back("+" + std::to_string(e.second) + " health");
             break;
-        case DAMAGE:
+        case Stats::DAMAGE:
             mEffects.push_back("+" + std::to_string(e.second) + " damage");
             break;
-        case ARMOR:
+        case Stats::ARMOR:
             mEffects.push_back("+" + std::to_string(e.second) + " armor");
             break;
         }

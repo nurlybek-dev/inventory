@@ -8,10 +8,9 @@
 
 
 enum ItemType {
-    HELM,
-    LEFT_HAND,
-    RIGHT_HAND,
-    BOOT,
+    ARMOR,
+    WEAPON,
+    ARTIFACT,
     NONE
 };
 
@@ -31,8 +30,8 @@ class Item {
         void Name(std::string name);
         void Description(std::string description);
 
-        void AddEffect(StatType type, int value);
-        std::map<StatType, int> GetEffects();
+        void AddEffect(Stats::StatType type, int value);
+        std::map<Stats::StatType, int> GetEffects();
         void Effect(Stats* stats);
         void UnEffect(Stats* stats);
 
@@ -41,7 +40,7 @@ class Item {
         std::string mDescription;
         Texture* mTexture;
         ItemType mType;
-        std::map<StatType, int> mEffectors;
+        std::map<Stats::StatType, int> mEffectors;
 
 };
 

@@ -3,8 +3,7 @@
 
 GameScene::GameScene()
 {
-    gCharacter = new Character("assets/PNG/brutal-helm.png", 0, SCREEN_HEIGHT - 32);
-    gCharacter->SetActive(true);
+    gCharacter = new Character();
     gLeftPanel = new Panel(200, SCREEN_HEIGHT);
     gTopPanel = new Panel(600, 350);
     gBottomPanel = new Panel(600, 250);
@@ -36,8 +35,10 @@ void GameScene::Update()
     if(gDialogueManager->IsEnd()) {
         SDL_Log("GAME OVER!");
         SceneManager::Instance()->ChangeScene(MENU);
+        return;
     }
 
+    gCharacter->Update();
     gDialogueManager->Update();
 }
 
@@ -48,16 +49,11 @@ void GameScene::Render()
     gBottomPanel->Render();
     gMapPanel->Render();
     gDialogueManager->Render();
-    // gCharacter->Render();
+    gCharacter->Render();
 }
 
 void GameScene::Input(SDL_Event event)
 {
-    // SDL_Rect rect = gCharacter->Pos();
-    // if(event.type == SDL_MOUSEBUTTONDOWN && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
-    // {
-    //     gCharacter->SetActive(!gCharacter->Active());
-    // }
-    // if(gCharacter->Active()) gCharacter->Input(event);
+    gCharacter->Input(event);
     gDialogueManager->Input(event);
 }

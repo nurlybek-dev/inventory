@@ -18,6 +18,7 @@ void SceneManager::Release()
 
 SceneManager::SceneManager()
 {
+    mCurrentScene = nullptr;
     ChangeScene(MENU);
 }
 
@@ -29,6 +30,11 @@ SceneManager::~SceneManager()
 
 void SceneManager::ChangeScene(Scenes scene)
 {
+    if(mCurrentScene) {
+        delete mCurrentScene;
+        mCurrentScene = nullptr;
+    }
+    
     switch (scene)
     {
     case MENU:

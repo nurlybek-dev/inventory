@@ -5,7 +5,7 @@
 
 class Button {
     public:
-        Button(std::string text, int x, int y);
+        Button(std::string text, int x, int y, int w, int h, int fontSize);
         ~Button();
 
         bool IsPressed();
@@ -19,6 +19,7 @@ class Button {
         std::string mText;
         bool mIsPressed;
         bool mIsPressedPrevFrame;
+        int mFontSize;
 };
 
 #endif

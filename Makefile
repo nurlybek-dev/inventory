@@ -14,7 +14,7 @@
 #CXX = g++
 #CXX = clang++
 
-EXE = build/game 
+EXE = 
 SOURCES = $(wildcard src/*.cpp)
 OBJS = $(patsubst src/%.cpp,build/%.o,$(SOURCES))
 UNAME_S := $(shell uname -s)
@@ -22,6 +22,7 @@ UNAME_S := $(shell uname -s)
 CXXFLAGS = -std=c++17 -Iinclude
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
+DEL_CMD =
 ##---------------------------------------------------------------------
 ## BUILD FLAGS PER PLATFORM
 ##---------------------------------------------------------------------
@@ -29,6 +30,9 @@ LIBS =
 ifeq ($(UNAME_S), Linux) #LINUX
 	ECHO_MESSAGE = "Linux"
 	LIBS += -lGL -ldl -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
+
+	DEL_CMD += "rm"
+	EXE = build/game
 
 	CXXFLAGS += -I/usr/include/
 	CFLAGS = $(CXXFLAGS)
@@ -47,6 +51,9 @@ endif
 ifeq ($(OS), Windows_NT)
 	ECHO_MESSAGE = "MinGW"
 	LIBS += -lgdi32 -lopengl32 -limm32 -LC:/msys64/mingw64/lib -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lmingw32 -mwindows -mconsole -lm -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -luuid -ladvapi32 -lsetupapi -lshell32 -ldinput8
+
+	DEL_CMD += "del"
+	EXE = build/game.exe
 
 	CXXFLAGS += -IC:/msys64/mingw64/include/SDL2 -Dmain=SDL_main
 	CFLAGS = $(CXXFLAGS)
@@ -74,4 +81,4 @@ $(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
 
 clean:
-	del game.exe $(OBJS)
+	$(DEL_CMD) $(EXE) $(OBJS)

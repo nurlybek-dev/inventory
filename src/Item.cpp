@@ -59,12 +59,12 @@ void Item::Description(std::string description)
     mDescription = description;
 }
 
-void Item::AddEffect(StatType type, int value)
+void Item::AddEffect(Stats::StatType type, int value)
 {
     mEffectors[type] = value;
 }
 
-std::map<StatType, int> Item::GetEffects()
+std::map<Stats::StatType, int> Item::GetEffects()
 {
     return mEffectors;
 }

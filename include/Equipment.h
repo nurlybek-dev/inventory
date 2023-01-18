@@ -29,11 +29,7 @@ class EquipmentSlot {
 class Equipment
 {
     public:
-        static Equipment* Instance();
-        static void Release();
-
-    public:
-        Equipment(Character* character);
+        Equipment(Character* character, int x, int y);
         ~Equipment();
 
         bool Equip(Item* item);
@@ -46,8 +42,6 @@ class Equipment
         Character* GetCharacter();
 
     private:
-        static Equipment* sInstance;
-        
         Character* mCharacter;
         Texture* mBackground;
         std::map<ItemType, EquipmentSlot*> mEquipments;

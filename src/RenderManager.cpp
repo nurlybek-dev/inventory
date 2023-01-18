@@ -23,6 +23,13 @@ RenderManager::RenderManager()
 
 RenderManager::~RenderManager()
 {
+    // for (auto & f : mFonts)
+    // {
+    //     // TTF_CloseFont(f.second);
+    //     f.second = nullptr;
+    // }
+    // mFonts.clear();
+
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
 }
@@ -62,7 +69,7 @@ bool RenderManager::Init()
                 success = false;
             }
 
-            mFont = TTF_OpenFont("assets/kenvector_future.ttf", FONT_SIZE);
+            // mFont = TTF_OpenFont("assets/kenvector_future.ttf", FONT_SIZE);
         }
     }
 
@@ -85,12 +92,13 @@ void RenderManager::RenderTexture(SDL_Texture* texture, SDL_Rect *srcrect, SDL_R
     SDL_RenderCopy(mRenderer, texture, srcrect, dstrect);
 }
 
-SDL_Rect RenderManager::RenderText(std::string text, int x, int y)
+SDL_Rect RenderManager::RenderText(std::string text, int x, int y, int fontSize)
 {
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
 
-    SDL_Surface *loadedSurface = TTF_RenderText_Solid(mFont, text.c_str(), {255, 255, 255, 255});
+    TTF_Font* font = GetFont("assets/kenvector_future.ttf", fontSize);
+    SDL_Surface *loadedSurface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
     if(loadedSurface == nullptr)
     {
         SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
@@ -114,11 +122,12 @@ SDL_Rect RenderManager::RenderText(std::string text, int x, int y)
     return srcrect;
 }
 
-SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength)
+SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize)
 {
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
-    SDL_Surface *loadedSurface = TTF_RenderText_Solid_Wrapped(mFont, text.c_str(), {255, 255, 255, 255}, wrapLength);
+    TTF_Font* font = GetFont("assets/kenvector_future.ttf", fontSize);
+    SDL_Surface *loadedSurface = TTF_RenderText_Solid_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
     
     if(loadedSurface == nullptr)
     {
@@ -142,6 +151,21 @@ SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32
     SDL_RenderCopy(mRenderer, newTexture, nullptr, &srcrect);
     SDL_DestroyTexture(newTexture);
     return srcrect;
+}
+
+TTF_Font *RenderManager::GetFont(std::string path, int size)
+{
+    std::string key = path + (char)size;
+    if (mFonts[key] == nullptr)
+    {
+        mFonts[key] = TTF_OpenFont(path.c_str(), size);
+        // Error handling for opening the font
+        if (mFonts[key] == nullptr)
+            printf("Font Loading Error: Font-%s Error-%s", path.c_str(), TTF_GetError());
+    }
+
+    // returning the cached font from the map
+    return mFonts[key];
 }
 
 SDL_Texture* RenderManager::LoadTexture(std::string path)

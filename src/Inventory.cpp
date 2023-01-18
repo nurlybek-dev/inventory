@@ -15,8 +15,10 @@ InventorySlot::~InventorySlot()
     delete mTexture;
     mTexture = nullptr;
 
-    delete mItem;
-    mItem = nullptr;
+    if(mItem) {
+        delete mItem;
+        mItem = nullptr;
+    }
 }
 
 bool InventorySlot::AddItem(Item* item)
@@ -86,49 +88,47 @@ void InventorySlot::Input(SDL_Event event)
     }
 }
 
-Inventory::Inventory(Character* character)
+Inventory::Inventory(Character* character, int x, int y)
 {
+    int space = 10;
     mCharacter = character;
-    mBackground = new Texture("assets/Inventory.png", 0, 0);
-    mBackground->SetPos(0, SCREEN_HEIGHT - mBackground->GetHeight() - 32);
+    mBackground = new Texture("assets/Inventory.png", {x, y, 100+space, 102+space}, {0, 0, 1, 1});
 
     mSlots.clear();
-    int x = 0;
-    int y = 0;
-    for(int i=0; i<30; i++) {
-        x = mBackground->Pos().x + i%6 * 32 + 4 + i%6 * 2;
-        y = mBackground->Pos().y + i/6 * 32 + 2 + 16 + 1 + 2 + i/6 * 2;
+    int dx = 0, dy = 0;
+    x += space/2;
+    y += space/2;
+    for(int i=0; i<9; i++) {
+        dx = x + i%3 * 32 + i%3 * 2;
+        dy = y + i/3 * 32 + i/3 * 2;
         mSlots.push_back(new InventorySlot(i, this));
-        mSlots[i]->SetPos(x, y);
+        mSlots[i]->SetPos(dx, dy);
+        SDL_Log("%d, %d\n", dx, dy);
     }
 
-    Item* item1 = new Item("Crossbow", "assets/PNG/crossbow.png", LEFT_HAND);
+    Item* item1 = new Item("Crossbow", "assets/PNG/crossbow.png", WEAPON);
     item1->Description("Crossbow can shoot");
-    item1->AddEffect(DAMAGE, 1);
-    Item* item2 = new Item("Gradius", "assets/PNG/gladius.png", LEFT_HAND);
+    item1->AddEffect(Stats::DAMAGE, 1);
+    Item* item2 = new Item("Gradius", "assets/PNG/gladius.png", WEAPON);
     item2->Description("Gladius for gladiators");
-    item2->AddEffect(DAMAGE, 2);
-    Item* item3 = new Item("Gloves", "assets/PNG/gloves.png", RIGHT_HAND);
-    item3->Description("Right hand gloves for mens");
-    item3->AddEffect(HEALTH, 5);
-    item3->AddEffect(ARMOR, 1);
-    Item* item4 = new Item("Kevlar", "assets/PNG/kevlar.png", HELM);
-    item4->Description("Good kevlar");
-    item4->AddEffect(ARMOR, 5);
+    item2->AddEffect(Stats::DAMAGE, 2);
+    Item* item3 = new Item("Gradius", "assets/PNG/armor-vest.png", ARMOR);
+    item3->Description("Armor vest");
+    item3->AddEffect(Stats::ARMOR, 2);
 
     AddItem(item1);
     AddItem(item2);
     AddItem(item3);
-    AddItem(item4);
 }
 
 Inventory::~Inventory()
 {
+    mCharacter = nullptr;
+    delete mBackground;
+    mBackground = nullptr;
     for(int i=0; i<mSlots.size(); i++) {
-        if(mSlots[i] != nullptr) {
-            delete mSlots[i];
-            mSlots[i] = nullptr;
-        }
+        delete mSlots[i];
+        mSlots[i] = nullptr;
     }
     mSlots.clear();
 }

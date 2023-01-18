@@ -2,7 +2,7 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 
-// #include "Tooltip.h"
+#include "Tooltip.h"
 #include "SceneManager.h"
 
 
@@ -11,11 +11,11 @@ void loop();
 
 RenderManager* gRenderManager = nullptr;
 SceneManager *gSceneManager;
-// Tooltip* gTooltip;
+Tooltip* gTooltip;
 
 int main(int, char**) {
     if(init()) {
-        // gTooltip = Tooltip::Instance();
+        gTooltip = Tooltip::Instance();
         gSceneManager = SceneManager::Instance();
         loop();
     }
@@ -37,9 +37,9 @@ void loop() {
             if(event.type == SDL_QUIT) {
                 running = false;
             }
-            // gTooltip->Hide();
-            // int x = event.motion.x;
-            // int y = event.motion.y;
+            gTooltip->Hide();
+            int x = event.motion.x;
+            int y = event.motion.y;
             gSceneManager->Input(event);
         }
 
@@ -54,7 +54,7 @@ void loop() {
 
         gSceneManager->Render();
 
-        // gTooltip->Render();
+        gTooltip->Render();
         gRenderManager->Render();
     }
 

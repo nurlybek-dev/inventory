@@ -8,6 +8,11 @@ Dialogue::Dialogue(const std::string &text)
 
 Dialogue::~Dialogue()
 {
+    for(int i = 0; i < mNextDialogues.size(); i++) {
+        delete mNextDialogues[i];
+        mNextDialogues[i] = nullptr;
+    }
+    mNextDialogues.clear();
 }
 
 void Dialogue::Render()

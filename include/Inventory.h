@@ -34,7 +34,7 @@ class InventorySlot {
 
 class Inventory {
     public:
-        Inventory(Character* character);
+        Inventory(Character* character, int x, int y);
         ~Inventory();
 
         Item* GetItem(int index);

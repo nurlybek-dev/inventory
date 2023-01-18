@@ -1,12 +1,13 @@
 #include "Button.h"
 #include "RenderManager.h"
 
-Button::Button(std::string text, int x, int y)
+Button::Button(std::string text, int x, int y, int w, int h, int fontSize)
 {
-    mTexture = new Texture("assets/Inventory.png", {x, y, 100, 50}, {0, 0, 1, 1});
+    mTexture = new Texture("assets/Inventory.png", {x, y, w, h}, {0, 0, 1, 1});
     mText = text;
     mIsPressed = false;
     mIsPressedPrevFrame = false;
+    mFontSize = fontSize;
 }
 
 Button::~Button()
@@ -22,7 +23,6 @@ bool Button::IsPressed()
 
 void Button::Update()
 {
-    if(mIsPressed) SDL_Log("%s mIsPressed: %d\n", mText.c_str(), mIsPressed);
 }
 
 void Button::Render()
@@ -30,7 +30,7 @@ void Button::Render()
     mTexture->Render();
     SDL_Rect rect = mTexture->Pos();
     // TODO: Text position centered
-    RenderManager::Instance()->RenderText(mText, rect.x, rect.y);
+    RenderManager::Instance()->RenderText(mText, rect.x, rect.y, mFontSize);
 }
 
 void Button::Input(SDL_Event event)

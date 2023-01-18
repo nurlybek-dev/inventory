@@ -3,8 +3,8 @@
 
 MenuScene::MenuScene() : Scene()
 {
-    mStartButton = new Button("Start", SCREEN_WIDTH/2-50, 200);
-    mExitButton = new Button("Exit", SCREEN_WIDTH/2-50, 300);
+    mStartButton = new Button("Start", SCREEN_WIDTH/2-50, 200, 100, 50, 24);
+    mExitButton = new Button("Exit", SCREEN_WIDTH/2-50, 300, 100, 50, 24);
 }
 
 MenuScene::~MenuScene()
@@ -24,11 +24,13 @@ void MenuScene::Update()
     if(mStartButton->IsPressed())
     {
         SceneManager::Instance()->ChangeScene(GAME);
+        return;
     }
 
     if(mExitButton->IsPressed())
     {
         SceneManager::Instance()->ChangeScene(END);
+        return;
     }
 }
 
