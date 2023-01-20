@@ -3,11 +3,15 @@
 
 Dialogue::Dialogue(const std::string &text)
 {
+    mAnimatedText = nullptr;
     SetText(text);
 }
 
 Dialogue::~Dialogue()
 {
+    delete mAnimatedText;
+    mAnimatedText = nullptr;
+
     for(int i = 0; i < mNextDialogues.size(); i++) {
         delete mNextDialogues[i];
         mNextDialogues[i] = nullptr;
@@ -17,29 +21,34 @@ Dialogue::~Dialogue()
 
 void Dialogue::Render()
 {
-    RenderManager::Instance()->RenderWrappedText(mText, 210, 10, 580);
-    int cy = 360;
-    for(int i = 0; i < mChoices.size(); i++) {
-        RenderManager::Instance()->RenderText(std::to_string(i+1) + ".", 210, cy);
-        SDL_Rect textRect = RenderManager::Instance()->RenderWrappedText(mChoices[i], 240, cy, 532);
-        cy += textRect.h;
+    mAnimatedText->Render();
+    // RenderManager::Instance()->RenderWrappedText(mText, 210, 10, 580);
+    if(mAnimatedText->End()) {
+        int cy = 360;
+        for(int i = 0; i < mChoices.size(); i++) {
+            RenderManager::Instance()->RenderText(std::to_string(i+1) + ".", 210, cy);
+            SDL_Rect textRect = RenderManager::Instance()->RenderWrappedText(mChoices[i], 240, cy, 532);
+            cy += textRect.h;
+        }
     }
 }
 
 void Dialogue::Update()
 {
-    
+    mAnimatedText->Update();
 }
 
 Dialogue* Dialogue::Input(SDL_Event event)
 {
-    if(event.type == SDL_KEYUP)
-    {
-        for(int i=0; i <= mChoices.size(); i++)
+    if(mAnimatedText->End()) {
+        if(event.type == SDL_KEYUP)
         {
-            if(event.key.keysym.sym == std::to_string(i+1).c_str()[0])
+            for(int i=0; i <= mChoices.size(); i++)
             {
-                return SelectChoice(i);
+                if(event.key.keysym.sym == std::to_string(i+1).c_str()[0])
+                {
+                    return SelectChoice(i);
+                }
             }
         }
     }
@@ -48,7 +57,8 @@ Dialogue* Dialogue::Input(SDL_Event event)
 
 void Dialogue::SetText(const std::string &text)
 {
-    mText = text;
+    mAnimatedText = new AnimatedText(text, 210, 10, 580, 24);
+    // mText = text;
 }
 
 void Dialogue::SetChoices(const std::vector<std::string> &choices, const std::vector<Dialogue*>& nextDialogues)

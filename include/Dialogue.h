@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <SDL2/SDL.h>
+#include "AnimatedText.h"
 
 class Dialogue 
 {
@@ -26,6 +27,7 @@ class Dialogue
         std::string mText;
         std::vector<std::string> mChoices;
         std::vector<Dialogue*> mNextDialogues;
+        AnimatedText *mAnimatedText;
 };
 
 #endif
