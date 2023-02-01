@@ -6,7 +6,7 @@ Character::Character()
     mEquipment = new Equipment(this, 45, 220);
     mStats = new Stats(this);
 
-    mIconsBackground = new Texture("assets/Inventory.png", {2, SCREEN_HEIGHT-38, 102, 36}, {0, 0, 1, 1});
+    mIconsBackground = new Texture("assets/Inventory.png", {2, SCREEN_HEIGHT-38, 138, 36}, {0, 0, 1, 1});
     mStatsIcon = new Texture("assets/PNG/visored-helm.png", 4, SCREEN_HEIGHT-36);
     mInventoryIcon = new Texture("assets/PNG/knapsack.png", 34, SCREEN_HEIGHT-36);
     mJournalIcon = new Texture("assets/PNG/scroll-unfurled.png", 68, SCREEN_HEIGHT-36);

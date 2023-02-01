@@ -76,9 +76,10 @@ void Tooltip::Render()
 {
     if(mShow)
     {
+        int fontSize = 16;
         int x, y;
-        int w = 100;
-        int h = 24 + 4 + 24*2 + 4 + mEffects.size() * 24 + 4;
+        int w = 200;
+        int h = fontSize + 4 + fontSize*2 + 4 + mEffects.size() * fontSize + 4;
         SDL_GetMouseState(&x, &y);
         x += 10;
         y += 10;
@@ -87,12 +88,12 @@ void Tooltip::Render()
         mBackground->SetHeight(h);
         mBackground->Render();
 
-        RenderManager::Instance()->RenderText(mTitle, x, y);
+        RenderManager::Instance()->RenderText(mTitle, x, y, fontSize);
 
         for(int i=0; i < mEffects.size(); i++) {
-            RenderManager::Instance()->RenderText(mEffects[i], x, y+((i+1)*24)+4);
+            RenderManager::Instance()->RenderText(mEffects[i], x, y+((i+1)*fontSize)+4, fontSize);
         }
 
-        RenderManager::Instance()->RenderText(mDescription, x, y+(int)((mEffects.size()+1) * 24)+4);
+        RenderManager::Instance()->RenderWrappedText(mDescription, x, y+(int)((mEffects.size()+1) * fontSize)+4, w, fontSize);
     }
 }

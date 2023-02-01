@@ -13,8 +13,8 @@ GameScene::GameScene()
     gTopPanel->SetPos(200, 0);
     gBottomPanel->SetPos(200, 350);
 
-    mMapOpenIcon = new Texture("assets/PNG/scroll-unfurled.png", 102, SCREEN_HEIGHT-36);
-    mMapCloseIcon = new Texture("assets/PNG/scroll-unfurled.png", 800-30-4, 4);
+    mMapOpenIcon = new Texture("assets/PNG/treasure-map.png", 102, SCREEN_HEIGHT-36);
+    mMapCloseIcon = new Texture("assets/PNG/cancel.png", 800-30-4, 4);
     mMap = new Map();
     mIsMapOpen = false;
 }
