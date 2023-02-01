@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Item.h"
+#include "Map.h"
 
 class Tooltip 
 {
@@ -17,6 +18,7 @@ class Tooltip
 
         bool Show();
         void Show(Item* item);
+        void Show(MapNode *node);
         void Hide();
 
         void Render();

@@ -41,7 +41,7 @@ bool RenderManager::Init()
         success = false;
         SDL_Log("Error init SDL. SDL_Error: %s\n", SDL_GetError());
     } else {
-        SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
+        SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
         mWindow = SDL_CreateWindow("SDL BASE", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
         if(mWindow == nullptr)
         {
@@ -54,6 +54,7 @@ bool RenderManager::Init()
                 SDL_Log("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
                 success = false;
             }
+            SDL_RenderSetLogicalSize(mRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
             SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
             int imgFlags = IMG_INIT_PNG;
@@ -90,6 +91,13 @@ void RenderManager::Render()
 void RenderManager::RenderTexture(SDL_Texture* texture, SDL_Rect *srcrect, SDL_Rect *dstrect)
 {
     SDL_RenderCopy(mRenderer, texture, srcrect, dstrect);
+}
+
+void RenderManager::DrawLine(int x1, int y1, int x2, int y2)
+{
+    SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
+    SDL_RenderDrawLine(mRenderer, x1, y1, x2, y2);
+    SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 }
 
 SDL_Rect RenderManager::RenderText(std::string text, int x, int y, int fontSize)

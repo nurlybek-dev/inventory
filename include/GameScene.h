@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Panel.h"
 #include "DialogueManager.h"
+#include "Map.h"
 
 class GameScene : public Scene 
 {
@@ -17,6 +18,9 @@ class GameScene : public Scene
         void Update() override;
         void Render() override;
         void Input(SDL_Event event) override;
+
+        void OpenMap();
+        void CloseMap();
     
     private:
         Character* gCharacter;
@@ -25,6 +29,12 @@ class GameScene : public Scene
         Panel* gBottomPanel;
         Panel* gMapPanel;
         DialogueManager* gDialogueManager;
+
+        Texture *mMapOpenIcon;
+        Texture *mMapCloseIcon;
+        Map* mMap;
+
+        bool mIsMapOpen;
 };
 
 #endif

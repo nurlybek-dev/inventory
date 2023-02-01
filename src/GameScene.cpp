@@ -12,6 +12,11 @@ GameScene::GameScene()
     gLeftPanel->SetPos(0, 0);
     gTopPanel->SetPos(200, 0);
     gBottomPanel->SetPos(200, 350);
+
+    mMapOpenIcon = new Texture("assets/PNG/scroll-unfurled.png", 102, SCREEN_HEIGHT-36);
+    mMapCloseIcon = new Texture("assets/PNG/scroll-unfurled.png", 800-30-4, 4);
+    mMap = new Map();
+    mIsMapOpen = false;
 }
 
 GameScene::~GameScene()
@@ -28,10 +33,20 @@ GameScene::~GameScene()
     gMapPanel = nullptr;
     delete gDialogueManager;
     gDialogueManager = nullptr;
+    delete mMapOpenIcon;
+    mMapOpenIcon = nullptr;
+    delete mMapCloseIcon;
+    mMapCloseIcon = nullptr;
+    delete mMap;
+    mMap = nullptr;
 }
 
 void GameScene::Update()
 {
+    if(mIsMapOpen) {
+        mMap->Update();
+        return;
+    }
     if(gDialogueManager->IsEnd()) {
         SDL_Log("GAME OVER!");
         SceneManager::Instance()->ChangeScene(MENU);
@@ -44,16 +59,50 @@ void GameScene::Update()
 
 void GameScene::Render()
 {
+    if(mIsMapOpen) {
+        mMap->Render();
+        mMapCloseIcon->Render();
+        return;
+    }
     gLeftPanel->Render();
     gTopPanel->Render();
     gBottomPanel->Render();
     gMapPanel->Render();
     gDialogueManager->Render();
     gCharacter->Render();
+    mMapOpenIcon->Render();
 }
 
 void GameScene::Input(SDL_Event event)
 {
+    int x = event.motion.x;
+    int y = event.motion.y;
+
+    if(mIsMapOpen) {
+        SDL_Rect rect = mMapCloseIcon->Pos();
+        if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
+        {
+            CloseMap();
+        }
+        mMap->Input(event);
+        return;
+    }
+
+    SDL_Rect rect = mMapOpenIcon->Pos();
+    if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
+    {
+        OpenMap();
+    }
     gCharacter->Input(event);
     gDialogueManager->Input(event);
+}
+
+void GameScene::OpenMap()
+{
+    mIsMapOpen = true;
+}
+
+void GameScene::CloseMap()
+{
+    mIsMapOpen = false;
 }

@@ -59,6 +59,14 @@ void Tooltip::Show(Item* item)
     }
 }
 
+void Tooltip::Show(MapNode* node)
+{
+    mShow= true;
+    mEffects.clear();
+    mTitle = node->Name();
+    mDescription = node->Description();
+}
+
 void Tooltip::Hide()
 {
     mShow = false;

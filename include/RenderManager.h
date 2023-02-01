@@ -30,6 +30,7 @@ class RenderManager
         void Clear();
         void Render();
         void RenderTexture(SDL_Texture* texture, SDL_Rect *pos, SDL_Rect *clip);
+        void DrawLine(int x1, int y1, int x2, int y2);
         SDL_Rect RenderText(std::string text, int x, int y, int fontSize=24);
         SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize=24);
         TTF_Font* GetFont(std::string path, int size);
