@@ -41,6 +41,7 @@ class RenderManager
         SDL_Window *mWindow;
         SDL_Renderer *mRenderer;
 
+        std::map<std::string, SDL_Texture*> mTextures;
         std::map<std::string, TTF_Font*> mFonts;
 };
 

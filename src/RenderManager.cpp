@@ -23,6 +23,13 @@ RenderManager::RenderManager()
 
 RenderManager::~RenderManager()
 {
+    for (auto & t : mTextures)
+    {
+        SDL_DestroyTexture(t.second);
+        t.second = nullptr;
+    }
+    mTextures.clear();
+    
     for (auto & f : mFonts)
     {
         TTF_CloseFont(f.second);
@@ -179,6 +186,11 @@ TTF_Font *RenderManager::GetFont(std::string path, int size)
 
 SDL_Texture* RenderManager::LoadTexture(std::string path)
 {
+
+    if(mTextures.count(path)) {
+        return mTextures[path];
+    }
+
     SDL_Texture* texture = nullptr;
     SDL_Surface* surface = IMG_Load(path.c_str());
     if(surface == nullptr)
@@ -191,5 +203,6 @@ SDL_Texture* RenderManager::LoadTexture(std::string path)
         }
         SDL_FreeSurface(surface);
     }
-    return texture;
+    mTextures[path] = texture;
+    return mTextures[path];
 }

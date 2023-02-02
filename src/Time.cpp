@@ -42,7 +42,7 @@ void Time::Tick()
     mDeltaTime = (double)((mNow - mLast)*1000 / (double)SDL_GetPerformanceFrequency() );
     mDeltaTime *= 0.001;
 
-    SDL_Log("Delta: %f\n", mDeltaTime);
+    // SDL_Log("Delta: %f\n", mDeltaTime);
 
 }
 
@@ -54,7 +54,7 @@ void Time::Update()
         avgFPS = 0;
     }
 
-    SDL_Log("Average FPS: %f\n", avgFPS);
+    // SDL_Log("Average FPS: %f\n", avgFPS);
 }
 
 void Time::Delay()

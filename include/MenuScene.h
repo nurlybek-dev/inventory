@@ -4,9 +4,19 @@
 #include "Scene.h"
 #include "Texture.h"
 #include "Button.h"
+#include "Animation.h"
 
 class MenuScene : public Scene
 {
+    public:
+        enum BookState {
+            CLOSED,
+            OPENED,
+            OPENING,
+            CLOSING,
+            FLIPPING_LEFT,
+            FLIPPING_RIGHT,
+        };
     public:
         MenuScene();
         ~MenuScene();
@@ -17,6 +27,16 @@ class MenuScene : public Scene
     private:
         Button* mStartButton;
         Button* mExitButton;
+
+        BookState mBookState;
+        
+        Texture* mBookClosed;
+        Texture* mBookOpened;
+        Animation* mBookOpen;
+        Animation* mBookClose;
+        Animation* mFlipLeft;
+        Animation* mFlipRight;
+
 };
 
 #endif
