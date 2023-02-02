@@ -1,6 +1,7 @@
 #ifndef _MENU_SCENE_H_
 #define _MENU_SCENE_H_
 
+#include <map>
 #include "Scene.h"
 #include "Texture.h"
 #include "Button.h"
@@ -17,6 +18,14 @@ class MenuScene : public Scene
             FLIPPING_LEFT,
             FLIPPING_RIGHT,
         };
+        enum BookTab {
+            PROFILE,
+            STATUS,
+            INVENTORY,
+            QUESTS,
+            SAVES,
+            SETTINGS,
+        };
     public:
         MenuScene();
         ~MenuScene();
@@ -29,9 +38,14 @@ class MenuScene : public Scene
         Button* mExitButton;
 
         BookState mBookState;
+        BookTab mBookTab;
         
+        Texture* mDeskTexture;
         Texture* mBookClosed;
         Texture* mBookOpened;
+
+        std::map<BookTab, Texture*> mBookTabTextures;
+
         Animation* mBookOpen;
         Animation* mBookClose;
         Animation* mFlipLeft;
