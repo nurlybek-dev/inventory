@@ -53,16 +53,16 @@ Stats* Character::GetStats()
     return mStats;
 }
 
-void Character::Update()
+void Character::Update(float delta)
 {
     switch (mActiveTab)
     {
     case Character::StatsTab:
-        mStats->Update();
+        mStats->Update(delta);
         break;
     case Character::InventoryTab:
-        // mEquipment->Update();
-        // mInventory->Update();
+        // mEquipment->Update(delta);
+        // mInventory->Update(delta);
         break;
     case Character::JournalTab:
         break;

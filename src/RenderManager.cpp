@@ -23,13 +23,14 @@ RenderManager::RenderManager()
 
 RenderManager::~RenderManager()
 {
-    // for (auto & f : mFonts)
-    // {
-    //     // TTF_CloseFont(f.second);
-    //     f.second = nullptr;
-    // }
-    // mFonts.clear();
+    for (auto & f : mFonts)
+    {
+        TTF_CloseFont(f.second);
+        f.second = nullptr;
+    }
+    mFonts.clear();
 
+    TTF_Quit();
     SDL_DestroyRenderer(mRenderer);
     SDL_DestroyWindow(mWindow);
 }

@@ -23,7 +23,7 @@ void MapNode::Input(SDL_Event event)
     }
 }
 
-void MapNode::Update()
+void MapNode::Update(float delta)
 {
 }
 
@@ -139,11 +139,11 @@ Map::~Map()
     mBackground = nullptr;
 }
 
-void Map::Update()
+void Map::Update(float delta)
 {
     for (int i = 0; i < mNodes.size(); i++)
     {
-        mNodes[i]->Update();
+        mNodes[i]->Update(delta);
     }
 }
 

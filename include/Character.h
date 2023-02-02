@@ -21,7 +21,7 @@ class Character
         Equipment* GetEquipment();
         Stats* GetStats();
 
-        void Update();
+        void Update(float delta);
         void Input(SDL_Event event);
         void Render();
 

@@ -13,7 +13,7 @@ class Dialogue
         ~Dialogue();
 
         void Render();
-        void Update();
+        void Update(float delta);
         Dialogue* Input(SDL_Event event);
 
         void SetText(const std::string& text);

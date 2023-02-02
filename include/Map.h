@@ -11,7 +11,7 @@ class MapNode
         MapNode(std::string name, std::string description, SDL_Rect rect);
         ~MapNode();
 
-        void Update();
+        void Update(float delta);
         void Input(SDL_Event event);
         void Render();
 
@@ -36,7 +36,7 @@ class Map
         Map();
         ~Map();
 
-        void Update();
+        void Update(float delta);
         void Input(SDL_Event event);
         void Render();
 

@@ -10,7 +10,7 @@ class Button {
 
         bool IsPressed();
 
-        void Update();
+        void Update(float delta);
         void Render();
         void Input(SDL_Event event);
 

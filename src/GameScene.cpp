@@ -41,10 +41,10 @@ GameScene::~GameScene()
     mMap = nullptr;
 }
 
-void GameScene::Update()
+void GameScene::Update(float delta)
 {
     if(mIsMapOpen) {
-        mMap->Update();
+        mMap->Update(delta);
         return;
     }
     if(gDialogueManager->IsEnd()) {
@@ -53,8 +53,8 @@ void GameScene::Update()
         return;
     }
 
-    gCharacter->Update();
-    gDialogueManager->Update();
+    gCharacter->Update(delta);
+    gDialogueManager->Update(delta);
 }
 
 void GameScene::Render()

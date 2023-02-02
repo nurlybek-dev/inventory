@@ -20,7 +20,7 @@ AnimatedText::~AnimatedText()
 
 }
 
-void AnimatedText::Update()
+void AnimatedText::Update(float delta)
 {
     if(mRenderedLetters < mText.length()){
         mRenderedText[mRenderedLetters] = mText[mRenderedLetters];

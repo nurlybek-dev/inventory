@@ -51,17 +51,17 @@ void SceneManager::ChangeScene(Scenes scene)
 
 void SceneManager::Render()
 {
-    mCurrentScene->Render();
+    if(mCurrentScene) mCurrentScene->Render();
 }
 
-void SceneManager::Update()
+void SceneManager::Update(float delta)
 {
-    mCurrentScene->Update();
+    if(mCurrentScene) mCurrentScene->Update(delta);
 }
 
 void SceneManager::Input(SDL_Event event)
 {
-    mCurrentScene->Input(event);
+    if(mCurrentScene) mCurrentScene->Input(event);
 }
 
 bool SceneManager::EndScene()

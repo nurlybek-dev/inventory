@@ -23,7 +23,7 @@ class SceneManager
         void ChangeScene(Scenes scene);
 
         void Render();
-        void Update();
+        void Update(float delta);
         void Input(SDL_Event event);
 
         bool EndScene();

@@ -8,7 +8,7 @@ Scene::~Scene()
 {
 }
 
-void Scene::Update()
+void Scene::Update(float delta)
 {
 }
 

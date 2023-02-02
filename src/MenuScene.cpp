@@ -16,10 +16,10 @@ MenuScene::~MenuScene()
     mExitButton = nullptr;
 }
 
-void MenuScene::Update()
+void MenuScene::Update(float delta)
 {
-    mStartButton->Update();
-    mExitButton->Update();
+    mStartButton->Update(delta);
+    mExitButton->Update(delta);
 
     if(mStartButton->IsPressed())
     {

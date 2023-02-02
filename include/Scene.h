@@ -10,7 +10,7 @@ class Scene
         ~Scene();
 
         virtual void Render();
-        virtual void Update();
+        virtual void Update(float delta);
         virtual void Input(SDL_Event event);
 };
 

@@ -21,7 +21,7 @@ bool Button::IsPressed()
     return mIsPressed || mIsPressedPrevFrame;
 }
 
-void Button::Update()
+void Button::Update(float delta)
 {
 }
 

@@ -50,13 +50,13 @@ Character* Stats::GetCharacter()
     return mCharacter;
 }
 
-void Stats::Update()
+void Stats::Update(float delta)
 {
     if(mRemainingPoints > 0) {
-        mButtonAddHealth->Update();
-        mButtonAddStr->Update();
-        mButtonAddAgi->Update();
-        mButtonAddInt->Update();
+        mButtonAddHealth->Update(delta);
+        mButtonAddStr->Update(delta);
+        mButtonAddAgi->Update(delta);
+        mButtonAddInt->Update(delta);
         if(mButtonAddHealth->IsPressed())
         {
             mStats[HEALTH]++;

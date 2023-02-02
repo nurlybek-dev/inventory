@@ -41,9 +41,9 @@ DialogueManager::~DialogueManager()
     mDialogues.clear();
 }
 
-void DialogueManager::Update()
+void DialogueManager::Update(float delta)
 {
-    mCurrentDialogue->Update();
+    mCurrentDialogue->Update(delta);
 }
 
 void DialogueManager::Render()

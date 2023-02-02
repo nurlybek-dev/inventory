@@ -11,7 +11,7 @@ class AnimatedText
         AnimatedText(std::string text, int x, int y, int wrapLength, int fontSize);
         ~AnimatedText();
 
-        void Update();
+        void Update(float delta);
         void Render();
         
         bool End();

@@ -15,7 +15,7 @@ class GameScene : public Scene
         GameScene();
         ~GameScene();
 
-        void Update() override;
+        void Update(float delta) override;
         void Render() override;
         void Input(SDL_Event event) override;
 

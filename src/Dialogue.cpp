@@ -33,9 +33,9 @@ void Dialogue::Render()
     }
 }
 
-void Dialogue::Update()
+void Dialogue::Update(float delta)
 {
-    mAnimatedText->Update();
+    mAnimatedText->Update(delta);
 }
 
 Dialogue* Dialogue::Input(SDL_Event event)
