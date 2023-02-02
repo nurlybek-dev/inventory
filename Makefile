@@ -19,7 +19,7 @@ SOURCES = $(wildcard src/*.cpp)
 OBJS = $(patsubst src/%.cpp,build/%.o,$(SOURCES))
 UNAME_S := $(shell uname -s)
 
-CXXFLAGS = -std=c++17 -Iinclude
+CXXFLAGS = -std=c++17 -Iinclude -w
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 DEL_CMD =
