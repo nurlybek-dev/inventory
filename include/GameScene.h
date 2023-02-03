@@ -8,6 +8,7 @@
 #include "Panel.h"
 #include "DialogueManager.h"
 #include "Map.h"
+#include "Book.h"
 
 class GameScene : public Scene 
 {
@@ -33,6 +34,7 @@ class GameScene : public Scene
         Texture *mMapOpenIcon;
         Texture *mMapCloseIcon;
         Map* mMap;
+        Book* mBook;
 
         bool mIsMapOpen;
 };

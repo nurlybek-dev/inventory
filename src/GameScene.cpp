@@ -17,10 +17,13 @@ GameScene::GameScene()
     mMapCloseIcon = new Texture("assets/PNG/cancel.png", 800-30-4, 4);
     mMap = new Map();
     mIsMapOpen = false;
+    mBook = new Book();
 }
 
 GameScene::~GameScene()
 {
+    delete mBook;
+    mBook = nullptr;
     delete gCharacter;
     gCharacter = nullptr;
     delete gLeftPanel;
@@ -43,58 +46,64 @@ GameScene::~GameScene()
 
 void GameScene::Update(float delta)
 {
-    if(mIsMapOpen) {
-        mMap->Update(delta);
-        return;
-    }
-    if(gDialogueManager->IsEnd()) {
-        SDL_Log("GAME OVER!");
-        SceneManager::Instance()->ChangeScene(MENU);
-        return;
-    }
+    mBook->Update(delta);
 
-    gCharacter->Update(delta);
-    gDialogueManager->Update(delta);
+    // if(mIsMapOpen) {
+    //     mMap->Update(delta);
+    //     return;
+    // }
+    // if(gDialogueManager->IsEnd()) {
+    //     SDL_Log("GAME OVER!");
+    //     SceneManager::Instance()->ChangeScene(MENU);
+    //     return;
+    // }
+
+    // gCharacter->Update(delta);
+    // gDialogueManager->Update(delta);
 }
 
 void GameScene::Render()
 {
-    if(mIsMapOpen) {
-        mMap->Render();
-        mMapCloseIcon->Render();
-        return;
-    }
-    gLeftPanel->Render();
-    gTopPanel->Render();
-    gBottomPanel->Render();
-    gMapPanel->Render();
-    gDialogueManager->Render();
-    gCharacter->Render();
-    mMapOpenIcon->Render();
+    mBook->Render();
+
+    // if(mIsMapOpen) {
+    //     mMap->Render();
+    //     mMapCloseIcon->Render();
+    //     return;
+    // }
+    // gLeftPanel->Render();
+    // gTopPanel->Render();
+    // gBottomPanel->Render();
+    // gMapPanel->Render();
+    // gDialogueManager->Render();
+    // gCharacter->Render();
+    // mMapOpenIcon->Render();
 }
 
 void GameScene::Input(SDL_Event event)
 {
+    mBook->Input(event);
+
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(mIsMapOpen) {
-        SDL_Rect rect = mMapCloseIcon->Pos();
-        if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
-        {
-            CloseMap();
-        }
-        mMap->Input(event);
-        return;
-    }
+    // if(mIsMapOpen) {
+    //     SDL_Rect rect = mMapCloseIcon->Pos();
+    //     if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
+    //     {
+    //         CloseMap();
+    //     }
+    //     mMap->Input(event);
+    //     return;
+    // }
 
-    SDL_Rect rect = mMapOpenIcon->Pos();
-    if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
-    {
-        OpenMap();
-    }
-    gCharacter->Input(event);
-    gDialogueManager->Input(event);
+    // SDL_Rect rect = mMapOpenIcon->Pos();
+    // if(event.type == SDL_MOUSEBUTTONUP && x > rect.x && x < rect.x + rect.w && y > rect.y && y < rect.y + rect.h)
+    // {
+    //     OpenMap();
+    // }
+    // gCharacter->Input(event);
+    // gDialogueManager->Input(event);
 }
 
 void GameScene::OpenMap()
