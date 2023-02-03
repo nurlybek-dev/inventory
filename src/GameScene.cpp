@@ -19,7 +19,6 @@ GameScene::GameScene()
     mIsMapOpen = false;
     mBook = new Book();
 }
-
 GameScene::~GameScene()
 {
     delete mBook;
@@ -65,7 +64,6 @@ void GameScene::Update(float delta)
 void GameScene::Render()
 {
     mBook->Render();
-
     // if(mIsMapOpen) {
     //     mMap->Render();
     //     mMapCloseIcon->Render();
@@ -86,6 +84,10 @@ void GameScene::Input(SDL_Event event)
 
     int x = event.motion.x;
     int y = event.motion.y;
+
+    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
+        mBook->AddText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nibh neque, efficitur ac eleifend vel, mattis id magna. Sed viverra, magna id gravida lacinia, tellus libero pulvinar quam, sed rutrum erat tortor ut neque. Etiam at congue orci. Donec et blandit elit. Duis rutrum iaculis ligula vitae tempus. Nam elementum euismod bibendum. Nullam at libero id magna semper pretium.");
+    }
 
     // if(mIsMapOpen) {
     //     SDL_Rect rect = mMapCloseIcon->Pos();

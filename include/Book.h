@@ -3,6 +3,7 @@
 
 #include <map>
 #include "Animation.h"
+#include "AnimatedText.h"
 
 class Book
 {
@@ -16,6 +17,7 @@ class Book
             FLIPPING_RIGHT,
         };
         enum BookTab {
+            EMPTY,
             PROFILE,
             STATUS,
             INVENTORY,
@@ -29,10 +31,32 @@ class Book
 
         void OpenTab(BookTab tab);
 
+        void AddText(std::string text);
+        void RenderText(std::string text);
+        void NextPage();
+        
         void Update(float delta);
         void Input(SDL_Event event);
         void Render();
+
+        size_t Split(const std::string &text, std::vector<std::string> &strings, char ch);
+
     private:
+        SDL_Rect mLeftPage;
+        SDL_Rect mRightPage;
+
+        int mWordsPerPage;
+        int mCharsPerPage;
+
+        int mLeftPageWords;
+        int mRightPageWords;
+
+        bool mWaitNextPage;
+        std::vector<std::string> mTextQueue;
+
+        AnimatedText *mLeftAnimatedText;
+        AnimatedText *mRightAnimatedText;
+
         BookState mBookState;
         BookTab mBookTab;
         BookTab mNextTab;

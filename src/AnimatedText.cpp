@@ -30,7 +30,33 @@ void AnimatedText::Update(float delta)
 
 void AnimatedText::Render()
 {
-    RenderManager::Instance()->RenderWrappedText(mRenderedText, mX, mY, mWrapLength, mFontSize);
+    if(mRenderedText.length()) RenderManager::Instance()->RenderWrappedText(mRenderedText, mX, mY, mWrapLength, mFontSize);
+}
+
+void AnimatedText::Clear()
+{
+    mRenderedLetters = 0;
+    mRenderedText = "";
+    mText = "";
+}
+
+void AnimatedText::SetText(const std::string &text)
+{
+    mText = text;
+    mRenderedText = "";
+    for(int i=0; i<text.length(); i++)
+    {
+        mRenderedText += " ";
+    }
+}
+
+void AnimatedText::AddText(const std::string &text)
+{
+    mText += text;
+    for(int i=0; i<text.length(); i++)
+    {
+        mRenderedText += " ";
+    }
 }
 
 bool AnimatedText::End()

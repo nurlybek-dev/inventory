@@ -13,6 +13,10 @@ class AnimatedText
 
         void Update(float delta);
         void Render();
+
+        void Clear();
+        void SetText(const std::string& text);
+        void AddText(const std::string& text);
         
         bool End();
     

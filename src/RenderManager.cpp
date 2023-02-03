@@ -142,7 +142,7 @@ SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32
 {
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
-    TTF_Font* font = GetFont("assets/kenvector_future.ttf", fontSize);
+    TTF_Font* font = GetFont("assets/CloisterBlack.ttf", fontSize);
     SDL_Surface *loadedSurface = TTF_RenderText_Solid_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
     
     if(loadedSurface == nullptr)
