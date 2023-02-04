@@ -2,11 +2,11 @@
 
 Book::Book()
 {
-    mWordsPerPage = 60;
+    mWordsPerPage = 90;
     mCharsPerPage = 400;
 
-    mLeftPage = {100, 185, 280, 20};
-    mRightPage = {430, 185, 280, 20};
+    mLeftPage = {85, 160, 280, 16};
+    mRightPage = {415, 160, 280, 16};
 
     mLeftPageWords = 0;
     mRightPageWords = 0;
@@ -15,9 +15,10 @@ Book::Book()
     mRightAnimatedText = new AnimatedText("", mRightPage.x, mRightPage.y, mRightPage.w, mRightPage.h);
 
     mWaitNextPage = false;
+    mEnd = false;
 
     // x = 823, y = 663
-    int x = SCREEN_WIDTH / 2 - 767/2;
+    int x = SCREEN_WIDTH / 2 - 768/2;
     int y = SCREEN_HEIGHT / 2 - 624/2;
     int w = 768;
     int h = 624;
@@ -34,14 +35,13 @@ Book::Book()
     mBookTabTextures[BookTab::SAVES] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 4368, w, h});
     mBookTabTextures[BookTab::SETTINGS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 4368, w, h});
 
-    mDeskTexture = new Texture("assets/Updated Paper Book/1 Sprites/Book Desk/4.png", {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
+    mDeskTexture = new Texture("assets/Updated Paper Book/1 Sprites/Book Desk/4.png", 0, 0);
     mBookClosed = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h});
     mBookOpened = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
     mBookOpen = new Animation("Book open", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h}, 5, 48, 0.3, false, false, false);
     mBookClose = new Animation("Book close", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 48, w, h}, 5, 48, 0.3, false, false, true);
     mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {6592, 1488, w, h}, 9, 48, 0.6, false, false, true);
     mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 1488, w, h}, 9, 48, 0.6, false, false, false);
-
 }
 
 Book::~Book()
@@ -148,7 +148,15 @@ void Book::RenderText(std::string text)
 
 void Book::AddText(std::string text)
 {
-    mTextQueue.push_back(text);
+    if(!mEnd) mTextQueue.push_back(text);
+}
+
+void Book::AddChoice(std::string text)
+{
+    if(!mEnd) {
+        mTextQueue.push_back("\n");
+        mTextQueue.push_back(text);
+    }
 }
 
 void Book::NextPage()
@@ -160,6 +168,31 @@ void Book::NextPage()
     mWaitNextPage = false;
     mFlipRight->Play();
     mBookState = BookState::FLIPPING_RIGHT;
+}
+
+void Book::TheEnd()
+{
+    if(!mEnd) {
+        NextPage();
+        AddText("\n\n");
+        AddText("          THE END.         ");
+        mEnd = true;
+    }
+}
+
+bool Book::WaitNextPage()
+{
+    return mWaitNextPage;
+}
+
+bool Book::IsAnimating()
+{
+    return !mLeftAnimatedText->End() || !mRightAnimatedText->End();
+}
+
+bool Book::IsOpen()
+{
+    return mBookState == BookState::OPENED;
 }
 
 void Book::Update(float delta)
@@ -240,30 +273,36 @@ void Book::Input(SDL_Event event)
     {
         switch(event.key.keysym.sym)
         {
-            case SDLK_1:
-                OpenTab(BookTab::EMPTY);
-                break;
-            case SDLK_2:
-                OpenTab(BookTab::PROFILE);
-                break;
-            case SDLK_3:
-                OpenTab(BookTab::STATUS);
-                break;
-            case SDLK_4:
-                OpenTab(BookTab::INVENTORY);
-                break;
-            case SDLK_5:
-                OpenTab(BookTab::QUESTS);
-                break;
-            case SDLK_6:
-                OpenTab(BookTab::SAVES);
-                break;
-            case SDLK_7:
-                OpenTab(BookTab::SETTINGS);
-                break;
+            // case SDLK_1:
+            //     OpenTab(BookTab::EMPTY);
+            //     break;
+            // case SDLK_2:
+            //     OpenTab(BookTab::PROFILE);
+            //     break;
+            // case SDLK_3:
+            //     OpenTab(BookTab::STATUS);
+            //     break;
+            // case SDLK_4:
+            //     OpenTab(BookTab::INVENTORY);
+            //     break;
+            // case SDLK_5:
+            //     OpenTab(BookTab::QUESTS);
+            //     break;
+            // case SDLK_6:
+            //     OpenTab(BookTab::SAVES);
+            //     break;
+            // case SDLK_7:
+            //     OpenTab(BookTab::SETTINGS);
+            //     break;
             case SDLK_RETURN:
-                if(mBookState == BookState::OPENED && mBookTab == BookTab::EMPTY && mWaitNextPage) {
-                    NextPage();
+                if(mBookState == BookState::OPENED && mBookTab == BookTab::EMPTY) {
+                    if(mWaitNextPage) {
+                        NextPage();
+                    }
+                    else if(mEnd) {
+                        mBookClose->Play();
+                        mBookState = BookState::CLOSING;
+                    }
                 }
                 break;
             case SDLK_w:

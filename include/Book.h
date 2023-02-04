@@ -32,12 +32,20 @@ class Book
         void OpenTab(BookTab tab);
 
         void AddText(std::string text);
+        void AddChoice(std::string choice);
+
         void RenderText(std::string text);
         void NextPage();
-        
+        void TheEnd();
+
+        bool WaitNextPage();
+        bool IsAnimating();
+        bool IsOpen();
+
         void Update(float delta);
         void Input(SDL_Event event);
         void Render();
+
 
         size_t Split(const std::string &text, std::vector<std::string> &strings, char ch);
 
@@ -52,6 +60,7 @@ class Book
         int mRightPageWords;
 
         bool mWaitNextPage;
+        bool mEnd;
         std::vector<std::string> mTextQueue;
 
         AnimatedText *mLeftAnimatedText;

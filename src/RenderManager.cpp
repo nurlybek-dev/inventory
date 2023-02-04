@@ -63,6 +63,7 @@ bool RenderManager::Init()
                 success = false;
             }
             SDL_RenderSetLogicalSize(mRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+            // SDL_RenderSetIntegerScale(mRenderer, SDL_TRUE);
             SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
             int imgFlags = IMG_INIT_PNG;
@@ -77,8 +78,6 @@ bool RenderManager::Init()
                 SDL_Log( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
                 success = false;
             }
-
-            // mFont = TTF_OpenFont("assets/kenvector_future.ttf", FONT_SIZE);
         }
     }
 
@@ -113,8 +112,8 @@ SDL_Rect RenderManager::RenderText(std::string text, int x, int y, int fontSize)
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
 
-    TTF_Font* font = GetFont("assets/kenvector_future.ttf", fontSize);
-    SDL_Surface *loadedSurface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
+    TTF_Font* font = GetFont("static/EBGaramond-Regular.ttf", fontSize);
+    SDL_Surface *loadedSurface = TTF_RenderText_Blended(font, text.c_str(), {255, 255, 255, 255});
     if(loadedSurface == nullptr)
     {
         SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
@@ -142,9 +141,9 @@ SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32
 {
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
-    TTF_Font* font = GetFont("assets/CloisterBlack.ttf", fontSize);
-    SDL_Surface *loadedSurface = TTF_RenderText_Solid_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
-    
+    TTF_Font* font = GetFont("static/EBGaramond-Regular.ttf", fontSize);
+    SDL_Surface *loadedSurface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
+
     if(loadedSurface == nullptr)
     {
         SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
@@ -171,13 +170,14 @@ SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32
 
 TTF_Font *RenderManager::GetFont(std::string path, int size)
 {
+    path = "assets/Fonts/" + path;
     std::string key = path + (char)size;
     if (mFonts[key] == nullptr)
     {
         mFonts[key] = TTF_OpenFont(path.c_str(), size);
         // Error handling for opening the font
         if (mFonts[key] == nullptr)
-            printf("Font Loading Error: Font-%s Error-%s", path.c_str(), TTF_GetError());
+            printf("Font Loading Error: Font-%s Error-%s\n", path.c_str(), TTF_GetError());
     }
 
     // returning the cached font from the map

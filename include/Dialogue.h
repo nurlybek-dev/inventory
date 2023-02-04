@@ -6,28 +6,30 @@
 #include <SDL2/SDL.h>
 #include "AnimatedText.h"
 
+
+struct Choice
+{
+    std::string text;
+    std::string nextID;
+};
+
 class Dialogue 
 {
     public:
-        Dialogue(const std::string &text);
+        Dialogue(const std::string& id, const std::string &text);
+        Dialogue(const std::string& id, const std::string &text, const std::vector<Choice>& choices);
         ~Dialogue();
 
-        void Render();
-        void Update(float delta);
-        Dialogue* Input(SDL_Event event);
-
         void SetText(const std::string& text);
-        void SetChoices(const std::vector<std::string>& choices, const std::vector<Dialogue*>& nextDialogues);
-        void AddChoise(const std::string& choice, Dialogue* nextDialog);
+        void SetChoices(const std::vector<Choice>& choices);
+        void AddChoise(const Choice& choice);
 
-        std::vector<std::string> GetChoices();
-        Dialogue* SelectChoice(int index);
+        std::vector<Choice> GetChoices() const;
 
     private:
+        std::string mID;
         std::string mText;
-        std::vector<std::string> mChoices;
-        std::vector<Dialogue*> mNextDialogues;
-        AnimatedText *mAnimatedText;
+        std::vector<Choice> mChoices;
 };
 
 #endif

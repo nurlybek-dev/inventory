@@ -16,6 +16,7 @@ GameScene::GameScene()
     mMapOpenIcon = new Texture("assets/PNG/treasure-map.png", 102, SCREEN_HEIGHT-36);
     mMapCloseIcon = new Texture("assets/PNG/cancel.png", 800-30-4, 4);
     mMap = new Map();
+    mWaitChoice = false;
     mIsMapOpen = false;
     mBook = new Book();
 }
@@ -46,6 +47,24 @@ GameScene::~GameScene()
 void GameScene::Update(float delta)
 {
     mBook->Update(delta);
+
+    if(!mWaitChoice && mBook->IsOpen()) {
+        if(gDialogueManager->IsEnd()) {
+            mBook->TheEnd();
+        }
+        else {
+            mBook->AddText(gDialogueManager->GetText());
+            int i=1;
+            mChoices.clear();
+            for(auto& c : gDialogueManager->GetChoices())
+            {
+                mBook->AddChoice(std::to_string(i) + ". " + c.text);
+                i++;
+                mChoices.push_back(c);
+            }
+            mWaitChoice = true;
+        }
+    }
 
     // if(mIsMapOpen) {
     //     mMap->Update(delta);
@@ -85,8 +104,18 @@ void GameScene::Input(SDL_Event event)
     int x = event.motion.x;
     int y = event.motion.y;
 
-    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE) {
-        mBook->AddText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam nibh neque, efficitur ac eleifend vel, mattis id magna. Sed viverra, magna id gravida lacinia, tellus libero pulvinar quam, sed rutrum erat tortor ut neque. Etiam at congue orci. Donec et blandit elit. Duis rutrum iaculis ligula vitae tempus. Nam elementum euismod bibendum. Nullam at libero id magna semper pretium.");
+    if(mWaitChoice && mBook->IsOpen())
+    {
+        if(event.type == SDL_KEYDOWN)
+        {
+            auto sym = event.key.keysym.sym;
+            if(sym >= SDLK_1 && sym <= SDLK_9 && sym - SDLK_1 <= mChoices.size() && !mBook->WaitNextPage() && !mBook->IsAnimating()) {
+                SDL_Log("Choices: %d", sym - SDLK_1);
+                gDialogueManager->SelectChoice(sym - SDLK_1);
+                mWaitChoice = false;
+                mBook->AddText("\n");
+            }
+        }
     }
 
     // if(mIsMapOpen) {

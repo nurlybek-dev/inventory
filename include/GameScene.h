@@ -36,6 +36,9 @@ class GameScene : public Scene
         Map* mMap;
         Book* mBook;
 
+        std::vector<Choice> mChoices;
+
+        bool mWaitChoice;
         bool mIsMapOpen;
 };
 

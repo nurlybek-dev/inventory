@@ -1,9 +1,8 @@
 #ifndef _RENDER_MANAGER_H_
 #define _RENDER_MANAGER_H_
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-#define FONT_SIZE 24
+#define SCREEN_WIDTH 768
+#define SCREEN_HEIGHT 560
 
 #include <string>
 #include <map>
@@ -31,8 +30,8 @@ class RenderManager
         void Render();
         void RenderTexture(SDL_Texture* texture, SDL_Rect *pos, SDL_Rect *clip);
         void DrawLine(int x1, int y1, int x2, int y2);
-        SDL_Rect RenderText(std::string text, int x, int y, int fontSize=24);
-        SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize=24);
+        SDL_Rect RenderText(std::string text, int x, int y, int fontSize=16);
+        SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize=16);
         TTF_Font* GetFont(std::string path, int size);
 
     private:
