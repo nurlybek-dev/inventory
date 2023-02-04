@@ -53,16 +53,30 @@ void GameScene::Update(float delta)
             mBook->TheEnd();
         }
         else {
-            mBook->AddText(gDialogueManager->GetText());
             int i=1;
-            mChoices.clear();
-            for(auto& c : gDialogueManager->GetChoices())
+            switch (gDialogueManager->GetType())
             {
-                mBook->AddChoice(std::to_string(i) + ". " + c.text);
-                i++;
-                mChoices.push_back(c);
+            case DialogueType::STORY:
+                mBook->AddText(gDialogueManager->GetText());
+                mBook->AddText("\n");
+                gDialogueManager->Next();
+                break;
+            case DialogueType::CHOICE:
+                mBook->AddText(gDialogueManager->GetText());
+                mChoices.clear();
+                for(auto& c : gDialogueManager->GetChoices())
+                {
+                    mBook->AddChoice(std::to_string(i) + ". " + c.text);
+                    i++;
+                    mChoices.push_back(c);
+                }
+                mBook->AddText("\n");
+                mWaitChoice = true;
+                break;
+            case DialogueType::COMBAT:
+            case DialogueType::ABILITY_CHECK:
+                break;
             }
-            mWaitChoice = true;
         }
     }
 

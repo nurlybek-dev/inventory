@@ -103,7 +103,7 @@ Inventory::Inventory(Character* character, int x, int y)
         dy = y + i/3 * 32 + i/3 * 2;
         mSlots.push_back(new InventorySlot(i, this));
         mSlots[i]->SetPos(dx, dy);
-        SDL_Log("%d, %d\n", dx, dy);
+        // SDL_Log("%d, %d\n", dx, dy);
     }
 
     Item* item1 = new Item("Crossbow", "assets/PNG/crossbow.png", WEAPON);

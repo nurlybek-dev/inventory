@@ -19,7 +19,7 @@ void SceneManager::Release()
 SceneManager::SceneManager()
 {
     mCurrentScene = nullptr;
-    ChangeScene(MENU);
+    ChangeScene(GAME);
 }
 
 SceneManager::~SceneManager()

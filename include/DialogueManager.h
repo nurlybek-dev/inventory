@@ -12,10 +12,19 @@ struct Choice
     std::string nextID;
 };
 
+enum DialogueType {
+    STORY,
+    CHOICE,
+    COMBAT,
+    ABILITY_CHECK,
+};
+
 struct Dialogue
 {
     std::string id;
     std::string text;
+    DialogueType type;
+    std::string nextID;
     std::vector<Choice> choices;
 };
 
@@ -24,10 +33,14 @@ class DialogueManager {
         DialogueManager();
         ~DialogueManager();
 
+        DialogueType GetType();
+        std::string NextID();
+
         std::string GetText();
         std::vector<Choice> GetChoices();
 
         void SelectChoice(int index);
+        void Next();
 
         bool IsEnd();
 

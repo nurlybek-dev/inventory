@@ -113,7 +113,7 @@ SDL_Rect RenderManager::RenderText(std::string text, int x, int y, int fontSize)
     SDL_Rect srcrect = {x, y, 0, 0};
 
     TTF_Font* font = GetFont("static/EBGaramond-Regular.ttf", fontSize);
-    SDL_Surface *loadedSurface = TTF_RenderText_Blended(font, text.c_str(), {255, 255, 255, 255});
+    SDL_Surface *loadedSurface = TTF_RenderUTF8_Blended(font, text.c_str(), {255, 255, 255, 255});
     if(loadedSurface == nullptr)
     {
         SDL_Log("Unable to create text %s! SDL_ttf Error: %s\n", text.c_str(), TTF_GetError());
@@ -142,7 +142,7 @@ SDL_Rect RenderManager::RenderWrappedText(std::string text, int x, int y, Uint32
     SDL_Texture *newTexture = nullptr;
     SDL_Rect srcrect = {x, y, 0, 0};
     TTF_Font* font = GetFont("static/EBGaramond-Regular.ttf", fontSize);
-    SDL_Surface *loadedSurface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
+    SDL_Surface *loadedSurface = TTF_RenderUTF8_Blended_Wrapped(font, text.c_str(), {255, 255, 255, 255}, wrapLength);
 
     if(loadedSurface == nullptr)
     {
@@ -186,7 +186,6 @@ TTF_Font *RenderManager::GetFont(std::string path, int size)
 
 SDL_Texture* RenderManager::LoadTexture(std::string path)
 {
-
     if(mTextures.count(path)) {
         return mTextures[path];
     }
