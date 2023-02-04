@@ -5,8 +5,11 @@ Book::Book()
     mWordsPerPage = 90;
     mCharsPerPage = 400;
 
-    mLeftPage = {85, 160, 280, 16};
-    mRightPage = {415, 160, 280, 16};
+    mLeftPage = {85, 110, 280, 16};
+    mRightPage = {415, 110, 280, 16};
+
+    mCurrentPage = 0;
+    mPageCount = 0;
 
     mLeftPageWords = 0;
     mRightPageWords = 0;
@@ -14,20 +17,21 @@ Book::Book()
     mLeftAnimatedText = new AnimatedText("", mLeftPage.x, mLeftPage.y, mLeftPage.w, mLeftPage.h);
     mRightAnimatedText = new AnimatedText("", mRightPage.x, mRightPage.y, mRightPage.w, mRightPage.h);
 
+    mIsWritingToLeft = true;
     mWaitNextPage = false;
     mEnd = false;
 
     // x = 823, y = 663
     int x = SCREEN_WIDTH / 2 - 768/2;
-    int y = SCREEN_HEIGHT / 2 - 624/2;
+    int y = SCREEN_HEIGHT / 2 - 624/2 - 50;
     int w = 768;
     int h = 624;
 
     mBookState = BookState::CLOSED;
-    mNextTab = BookTab::EMPTY;
-    mBookTab = BookTab::EMPTY;
+    mNextTab = BookTab::STORY;
+    mBookTab = BookTab::STORY;
 
-    mBookTabTextures[BookTab::EMPTY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
+    mBookTabTextures[BookTab::STORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
     mBookTabTextures[BookTab::PROFILE] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 3648, w, h});
     mBookTabTextures[BookTab::STATUS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {1696, 3648, w, h});
     mBookTabTextures[BookTab::INVENTORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {2512, 3648, w, h});
@@ -35,25 +39,26 @@ Book::Book()
     mBookTabTextures[BookTab::SAVES] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 4368, w, h});
     mBookTabTextures[BookTab::SETTINGS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 4368, w, h});
 
-    mDeskTexture = new Texture("assets/Updated Paper Book/1 Sprites/Book Desk/4.png", 0, 0);
     mBookClosed = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h});
     mBookOpened = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
     mBookOpen = new Animation("Book open", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h}, 5, 48, 0.3, false, false, false);
     mBookClose = new Animation("Book close", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 48, w, h}, 5, 48, 0.3, false, false, true);
     mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {6592, 1488, w, h}, 9, 48, 0.6, false, false, true);
     mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 1488, w, h}, 9, 48, 0.6, false, false, false);
+
+    NewPage();
 }
 
 Book::~Book()
 {
-    delete mBookTabTextures[BookTab::EMPTY];
+    delete mBookTabTextures[BookTab::STORY];
     delete mBookTabTextures[BookTab::PROFILE];
     delete mBookTabTextures[BookTab::STATUS];
     delete mBookTabTextures[BookTab::INVENTORY];
     delete mBookTabTextures[BookTab::QUESTS];
     delete mBookTabTextures[BookTab::SAVES];
     delete mBookTabTextures[BookTab::SETTINGS];
-    mBookTabTextures[BookTab::EMPTY] = nullptr;
+    mBookTabTextures[BookTab::STORY] = nullptr;
     mBookTabTextures[BookTab::PROFILE] = nullptr;
     mBookTabTextures[BookTab::STATUS] = nullptr;
     mBookTabTextures[BookTab::INVENTORY] = nullptr;
@@ -67,9 +72,6 @@ Book::~Book()
 
     delete mRightAnimatedText;
     mRightAnimatedText = nullptr;
-
-    delete mDeskTexture;
-    mDeskTexture = nullptr;
 
     delete mBookClosed;
     mBookClosed = nullptr;
@@ -98,18 +100,27 @@ void Book::OpenTab(BookTab tab)
         mNextTab = tab;
         if(mBookTab > tab)
         {
-            mFlipLeft->Play();
-            mBookState = BookState::FLIPPING_LEFT;
+            FlipLeft();
         }
         else
         {
-            mFlipRight->Play();
-            mBookState = BookState::FLIPPING_RIGHT;
+            FlipRight();
         }
     }
 }
 
-void Book::RenderText(std::string text)
+bool Book::IsTextFit(const std::string& text)
+{
+    std::vector<std::string> words;
+    size_t count = Split(text, words, ' ');
+
+    int forLeft = mWordsPerPage - mLeftPageWords;
+    int forRight = mWordsPerPage - mRightPageWords;
+
+    return forLeft > count || forRight > count;
+}
+
+void Book::AddText(std::string text)
 {
     std::vector<std::string> words;
     size_t count = Split(text, words, ' ');
@@ -120,52 +131,78 @@ void Book::RenderText(std::string text)
     std::string leftText = "";
     std::string rightText = "";
 
-    if(forLeft > count) {
+    if(mIsWritingToLeft && forLeft >= count) {
         for(int i=0; i < count; i++) {
             leftText += words[i] + ' ';
             mLeftPageWords++;
         }
+        mPages[mCurrentPage].leftPageText += leftText;
         mLeftAnimatedText->AddText(leftText);
-    } else if(forLeft + forRight > count) {
-        int i=0;
-        while(i < forLeft) {
-            leftText += words[i] + ' ';
-            i++;
-            mLeftPageWords++;
-        }
-        while(i < count) {
+    } else if(forRight >= count) {
+        mIsWritingToLeft = false;
+        for(int i=0; i < count; i++) {
             rightText += words[i] + ' ';
-            i++;
             mRightPageWords++;
         }
-        mLeftAnimatedText->AddText(leftText);
+        mPages[mCurrentPage].rightPageText += rightText;
         mRightAnimatedText->AddText(rightText);
     } else {
         mWaitNextPage = true;
-        mTextQueue.insert(mTextQueue.begin(), text);
     }
-}
-
-void Book::AddText(std::string text)
-{
-    if(!mEnd) mTextQueue.push_back(text);
 }
 
 void Book::AddChoice(std::string text)
 {
     if(!mEnd) {
-        mTextQueue.push_back("\n");
-        mTextQueue.push_back(text);
+        AddText("\n" + text);
     }
 }
 
-void Book::NextPage()
+void Book::NewPage()
 {
     mLeftPageWords = 0;
     mRightPageWords = 0;
     mLeftAnimatedText->Clear();
     mRightAnimatedText->Clear();
+    mIsWritingToLeft = true;
     mWaitNextPage = false;
+    mPageCount++;
+    mCurrentPage = mPageCount;
+    Page page;
+    mPages[mCurrentPage] = page;
+    if(mCurrentPage > 1) FlipRight();
+}
+
+void Book::PreviousPage()
+{
+    SDL_Log("Page: %d %d/%d\n", IsAnimating(), mCurrentPage, mPageCount);
+    if(!IsAnimating() && mCurrentPage > 1) {
+        mCurrentPage--;
+        mLeftAnimatedText->SetText(mPages[mCurrentPage].leftPageText, true);
+        mRightAnimatedText->SetText(mPages[mCurrentPage].rightPageText, true);
+        FlipLeft();
+    }
+}
+
+void Book::NextPage()
+{
+    SDL_Log("Page: %d %d/%d\n",IsAnimating(), mCurrentPage, mPageCount);
+    if(!IsAnimating() && mCurrentPage < mPageCount) {
+        mCurrentPage++;
+        mLeftAnimatedText->SetText(mPages[mCurrentPage].leftPageText, true);
+        mRightAnimatedText->SetText(mPages[mCurrentPage].rightPageText, true);
+        FlipRight();
+    }
+}
+
+void Book::FlipLeft()
+{
+    mFlipLeft->Play();
+    mBookState = BookState::FLIPPING_LEFT;
+}
+
+void Book::FlipRight()
+{
     mFlipRight->Play();
     mBookState = BookState::FLIPPING_RIGHT;
 }
@@ -173,7 +210,7 @@ void Book::NextPage()
 void Book::TheEnd()
 {
     if(!mEnd) {
-        NextPage();
+        NewPage();
         AddText("\n\n");
         AddText("          THE END.         ");
         mEnd = true;
@@ -195,6 +232,11 @@ bool Book::IsOpen()
     return mBookState == BookState::OPENED;
 }
 
+bool Book::IsInLastPage()
+{
+    return mCurrentPage == mPageCount;
+}
+
 void Book::Update(float delta)
 {
     switch(mBookState)
@@ -203,17 +245,9 @@ void Book::Update(float delta)
             // mBookClosed->Update(delta);
             break;
         case BookState::OPENED:
-            if(mBookTab == BookTab::EMPTY) {
+            if(mBookTab == BookTab::STORY) {
                 mLeftAnimatedText->Update(delta);
                 if(mLeftAnimatedText->End()) mRightAnimatedText->Update(delta);
-                if(mLeftAnimatedText->End() && mRightAnimatedText->End() && mTextQueue.size()) {
-                    if(!mWaitNextPage) {
-                        std::string text = mTextQueue.front();
-                        mTextQueue.erase(mTextQueue.begin());
-                        RenderText(text);
-                    }
-                }
-
             }
             break;
         case BookState::OPENING:
@@ -274,7 +308,7 @@ void Book::Input(SDL_Event event)
         switch(event.key.keysym.sym)
         {
             // case SDLK_1:
-            //     OpenTab(BookTab::EMPTY);
+            //     OpenTab(BookTab::STORY);
             //     break;
             // case SDLK_2:
             //     OpenTab(BookTab::PROFILE);
@@ -295,9 +329,9 @@ void Book::Input(SDL_Event event)
             //     OpenTab(BookTab::SETTINGS);
             //     break;
             case SDLK_RETURN:
-                if(mBookState == BookState::OPENED && mBookTab == BookTab::EMPTY) {
+                if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
                     if(mWaitNextPage) {
-                        NextPage();
+                        NewPage();
                     }
                     else if(mEnd) {
                         mBookClose->Play();
@@ -320,17 +354,19 @@ void Book::Input(SDL_Event event)
                 }
                 break;
             case SDLK_a:
-                if(mBookState == BookState::OPENED && mBookTab != BookTab::EMPTY)
+                if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY)
                 {
-                    int prevTab = mBookTab;
-                    OpenTab(static_cast<BookTab>(prevTab - 1));
+                    PreviousPage();
+                    // int prevTab = mBookTab;
+                    // OpenTab(static_cast<BookTab>(prevTab - 1));
                 }
                 break;
             case SDLK_d:
-                if(mBookState == BookState::OPENED && mBookTab != BookTab::SETTINGS)
+                if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY)
                 {
-                    int nextTab = mBookTab;
-                    OpenTab(static_cast<BookTab>(nextTab + 1));
+                    NextPage();
+                    // int nextTab = mBookTab;
+                    // OpenTab(static_cast<BookTab>(nextTab + 1));
                 }
                 break;
         }
@@ -339,11 +375,12 @@ void Book::Input(SDL_Event event)
 
 void Book::Render()
 {
-    mDeskTexture->Render();
     if(mBookState != BookState::CLOSED && mBookState != BookState::OPENING && mBookState != BookState::CLOSING)
     {
         mBookTabTextures[mBookTab]->Render();
-        if(mBookTab == BookTab::EMPTY) {
+        if(mBookTab == BookTab::STORY) {
+            // if(mPages[mCurrentPage].leftPageText.length()) RenderManager::Instance()->RenderWrappedText(mPages[mCurrentPage].leftPageText, mLeftPage.x, mLeftPage.y, mLeftPage.w, mLeftPage.h);
+            // if(mPages[mCurrentPage].rightPageText.length()) RenderManager::Instance()->RenderWrappedText(mPages[mCurrentPage].rightPageText, mRightPage.x, mRightPage.y, mRightPage.w, mRightPage.h);
             mLeftAnimatedText->Render();
             mRightAnimatedText->Render();
         }

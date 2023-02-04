@@ -12,6 +12,7 @@ GameScene::GameScene()
     gLeftPanel->SetPos(0, 0);
     gTopPanel->SetPos(200, 0);
     gBottomPanel->SetPos(200, 350);
+    mDeskTexture = new Texture("assets/Updated Paper Book/1 Sprites/Book Desk/4.png", 0, 0);
 
     mMapOpenIcon = new Texture("assets/PNG/treasure-map.png", 102, SCREEN_HEIGHT-36);
     mMapCloseIcon = new Texture("assets/PNG/cancel.png", 800-30-4, 4);
@@ -22,6 +23,8 @@ GameScene::GameScene()
 }
 GameScene::~GameScene()
 {
+    delete mDeskTexture;
+    mDeskTexture = nullptr;
     delete mBook;
     mBook = nullptr;
     delete gCharacter;
@@ -54,24 +57,43 @@ void GameScene::Update(float delta)
         }
         else {
             int i=1;
+            std::string text;
             switch (gDialogueManager->GetType())
             {
             case DialogueType::STORY:
-                mBook->AddText(gDialogueManager->GetText());
-                mBook->AddText("\n");
-                gDialogueManager->Next();
+                text = gDialogueManager->GetText();
+                if(mBook->IsTextFit(text)) {
+                    mBook->AddText(text);
+                    mBook->AddText("\n");
+                    gDialogueManager->Next();
+                } else {
+                    mBook->NewPage();
+                }
+
                 break;
             case DialogueType::CHOICE:
-                mBook->AddText(gDialogueManager->GetText());
+                text = gDialogueManager->GetText();
                 mChoices.clear();
                 for(auto& c : gDialogueManager->GetChoices())
                 {
-                    mBook->AddChoice(std::to_string(i) + ". " + c.text);
+                    text += "\n" + std::to_string(i) + ". " + c.text;
                     i++;
-                    mChoices.push_back(c);
                 }
-                mBook->AddText("\n");
-                mWaitChoice = true;
+                if(mBook->IsTextFit(text)) {
+                    mBook->AddText(gDialogueManager->GetText());
+                    mChoices.clear();
+                    i = 1;
+                    for(auto& c : gDialogueManager->GetChoices())
+                    {
+                        mBook->AddChoice(std::to_string(i) + ". " + c.text);
+                        mChoices.push_back(c);
+                        i++;
+                    }
+                    mWaitChoice = true;
+                } else {
+                    mBook->NewPage();
+                }
+
                 break;
             case DialogueType::COMBAT:
             case DialogueType::ABILITY_CHECK:
@@ -96,6 +118,7 @@ void GameScene::Update(float delta)
 
 void GameScene::Render()
 {
+    mDeskTexture->Render();
     mBook->Render();
     // if(mIsMapOpen) {
     //     mMap->Render();
@@ -123,7 +146,7 @@ void GameScene::Input(SDL_Event event)
         if(event.type == SDL_KEYDOWN)
         {
             auto sym = event.key.keysym.sym;
-            if(sym >= SDLK_1 && sym <= SDLK_9 && sym - SDLK_1 <= mChoices.size() && !mBook->WaitNextPage() && !mBook->IsAnimating()) {
+            if(sym >= SDLK_1 && sym <= SDLK_9 && sym - SDLK_1 <= mChoices.size() && !mBook->WaitNextPage() && !mBook->IsAnimating() && mBook->IsInLastPage()) {
                 SDL_Log("Choices: %d", sym - SDLK_1);
                 gDialogueManager->SelectChoice(sym - SDLK_1);
                 mWaitChoice = false;

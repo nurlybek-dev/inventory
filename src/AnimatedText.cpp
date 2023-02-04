@@ -40,23 +40,39 @@ void AnimatedText::Clear()
     mText = "";
 }
 
-void AnimatedText::SetText(const std::string &text)
+void AnimatedText::SetText(const std::string &text, bool skipAnimation)
 {
+    mRenderedLetters = 0;
     mText = text;
-    mRenderedText = "";
-    for(int i=0; i<text.length(); i++)
-    {
-        mRenderedText += " ";
+    if(skipAnimation) {
+        mRenderedText = mText;
+        mRenderedLetters += text.length();
+    } else {
+        mRenderedText = "";
+        for(int i=0; i<text.length(); i++)
+        {
+            mRenderedText += " ";
+        }
     }
 }
 
-void AnimatedText::AddText(const std::string &text)
+void AnimatedText::AddText(const std::string &text, bool skipAnimation)
 {
     mText += text;
-    for(int i=0; i<text.length(); i++)
-    {
-        mRenderedText += " ";
+    if(skipAnimation) {
+        mRenderedText += text;
+        mRenderedLetters += text.length();
+    } else {
+        for(int i=0; i<text.length(); i++)
+        {
+            mRenderedText += " ";
+        }
     }
+}
+
+std::string AnimatedText::GetText()
+{
+    return mText;
 }
 
 bool AnimatedText::End()

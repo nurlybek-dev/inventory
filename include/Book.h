@@ -5,6 +5,11 @@
 #include "Animation.h"
 #include "AnimatedText.h"
 
+struct Page {
+    std::string leftPageText;
+    std::string rightPageText;
+};
+
 class Book
 {
     public:
@@ -17,7 +22,7 @@ class Book
             FLIPPING_RIGHT,
         };
         enum BookTab {
-            EMPTY,
+            STORY,
             PROFILE,
             STATUS,
             INVENTORY,
@@ -31,16 +36,22 @@ class Book
 
         void OpenTab(BookTab tab);
 
+        bool IsTextFit(const std::string& text);
+
         void AddText(std::string text);
         void AddChoice(std::string choice);
 
-        void RenderText(std::string text);
+        void NewPage();
+        void PreviousPage();
         void NextPage();
+        void FlipLeft();
+        void FlipRight();
         void TheEnd();
 
         bool WaitNextPage();
         bool IsAnimating();
         bool IsOpen();
+        bool IsInLastPage();
 
         void Update(float delta);
         void Input(SDL_Event event);
@@ -52,6 +63,11 @@ class Book
     private:
         SDL_Rect mLeftPage;
         SDL_Rect mRightPage;
+ 
+        int mCurrentPage;
+        int mPageCount;
+
+        std::map<int, Page> mPages;
 
         int mWordsPerPage;
         int mCharsPerPage;
@@ -59,9 +75,10 @@ class Book
         int mLeftPageWords;
         int mRightPageWords;
 
+        bool mIsWritingToLeft;
+
         bool mWaitNextPage;
         bool mEnd;
-        std::vector<std::string> mTextQueue;
 
         AnimatedText *mLeftAnimatedText;
         AnimatedText *mRightAnimatedText;
@@ -70,7 +87,6 @@ class Book
         BookTab mBookTab;
         BookTab mNextTab;
         
-        Texture* mDeskTexture;
         Texture* mBookClosed;
         Texture* mBookOpened;
 

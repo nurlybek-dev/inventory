@@ -31,6 +31,7 @@ class GameScene : public Scene
         Panel* gMapPanel;
         DialogueManager* gDialogueManager;
 
+        Texture* mDeskTexture;
         Texture *mMapOpenIcon;
         Texture *mMapCloseIcon;
         Map* mMap;

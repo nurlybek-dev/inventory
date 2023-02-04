@@ -15,8 +15,9 @@ class AnimatedText
         void Render();
 
         void Clear();
-        void SetText(const std::string& text);
-        void AddText(const std::string& text);
+        void SetText(const std::string& text, bool skipAnimation=false);
+        void AddText(const std::string& text, bool skipAnimation=false);
+        std::string GetText();
         
         bool End();
     

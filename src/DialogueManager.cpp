@@ -2,62 +2,68 @@
 
 DialogueManager::DialogueManager()
 {
-    Dialogue dialogue7;
-    dialogue7.id = "7";
-    dialogue7.text = "Тест русского языка так то.";
-    dialogue7.nextID = "1";
-    dialogue7.type = DialogueType::STORY;
+    Dialogue prolog1;
+    prolog1.id = "prolog1";
+    prolog1.text = "Рыцари всегда занимали особое место в сердцах людей. Они были героями и защитниками народа, ведь они не боялись подвергать свои жизни опасности, чтобы спасти невинных и защитить слабых. Они представляли собой символ отваги и могущества, сражались с самыми страшными существами, и отправлялись в самые опасные путешествия.";
+    prolog1.type = DialogueType::STORY;
+    prolog1.nextID = "prolog2";
 
-    Dialogue dialogue1;
-    dialogue1.id = "1";
-    dialogue1.type = DialogueType::CHOICE;
-    dialogue1.text = "Wait, for what purpose are you going to the city";
-    dialogue1.choices = {Choice("I'm a traveler, heading to the tavern.", "2"), Choice("What's your business?", "3")};
+    Dialogue prolog2;
+    prolog2.id = "prolog2";
+    prolog2.text = "Рыцари не боялись вступать в битву с драконами, которые грозили их деревням и городам. И они безукоризненно следовали своим принципам, чтобы спасти принцесс, которых пытались украсть злые властители.";
+    prolog2.type = DialogueType::STORY;
+    prolog2.nextID = "prolog3";
 
-    Dialogue dialogue2;
-    dialogue2.id = "2";
-    dialogue2.type = DialogueType::CHOICE;
-    dialogue2.text = "You can go through, you can get to the tavern on the left road.";
-    dialogue2.choices = {Choice("(Continue)", "4")};
+    Dialogue prolog3;
+    prolog3.id = "prolog3";
+    prolog3.text = "Добро пожаловать в мир Рыцарей! Мечтаешь ли ты стать рыцарем и защищать свою страну от зла или же ищешь славы и богатства, все это достанется тебе, если ты станешь рыцарем! Отправляйся в столицу, чтобы стать оруженосцем и начать обучение рыцарству. Но твой путь не будет легким, и ты встретишь разные препятствия, которые предстоит преодолеть. Готов ли ты к этому путешествию и стать настоящим рыцарем?";
+    prolog3.type = DialogueType::CHOICE;
+    prolog3.choices = {Choice("В путь.", "chapter1_1"), Choice("Пойти работать на поле.", "-1")};
 
-    Dialogue dialogue3;
-    dialogue3.id = "3";
-    dialogue3.type = DialogueType::CHOICE;
-    dialogue3.text = "With such an attitude, I won't let you into the city, go cool off and come back.";
-    dialogue3.choices = {Choice("(Continue)", "5")};
+    Dialogue chapter1_1;
+    chapter1_1.id = "chapter1_1";
+    chapter1_1.text = "Деревня в который в ты живешь, небольшая и уютная. Распложенная в уединенном месте, вдали от столицы. Дома в деревне выстроены из дерева и окружены большими садами, где растут фрукты и овощи. Жизнь в деревне тихая и спокойная. На главной площади находится фонтан, вокруг которого собираются жители деревни в свободное время.";
+    chapter1_1.type = DialogueType::STORY;
+    chapter1_1.nextID = "chapter1_2";
 
-    Dialogue dialogue4;
-    dialogue4.id = "4"; 
-    dialogue4.type = DialogueType::CHOICE;
-    dialogue4.text = "You entered the city and reached the tavern, mission accomplished.";
-    dialogue4.choices = {Choice("(END)", "-1")};
+    Dialogue chapter1_2;
+    chapter1_2.id = "chapter1_2";
+    chapter1_2.text = "Жители дружелюбные и заботливые, они всегда готовы прийти на помощь в несложных делах. Услышав что ты уходишь из деревни, люди собрались на площади что бы проводить тебя.";
+    chapter1_2.type = DialogueType::STORY;
+    chapter1_2.nextID = "chapter1_3";
 
-    Dialogue dialogue5;
-    dialogue5.id = "5";
-    dialogue5.type = DialogueType::CHOICE;
-    dialogue5.text = "You have set up camp at the edge of the forest and rested, you can return to the gate.";
-    dialogue5.choices = {Choice("Head towards the gate.", "1"), Choice("Rest another day and just chill in forest.", "6")};
+    Dialogue chapter1_3;
+    chapter1_3.id = "chapter1_3";
+    chapter1_3.text = "Староста выходит вперед что бы отдать тебе провизию которую они собрали и спрашивает тебя";
+    chapter1_3.type = DialogueType::STORY;
+    chapter1_3.nextID = "chapter1_4";
 
-    Dialogue dialogue6;
-    dialogue6.id = "6";
-    dialogue6.type = DialogueType::CHOICE;
-    dialogue6.text = "You walk in forest, bathed in the river and very tired.";
-    dialogue6.choices = {Choice("Come back to camp and sleep.", "5")};
+    Dialogue chapter1_4;
+    chapter1_4.id = "chapter1_4";
+    chapter1_4.text = "Ты уже выбрал каким путем пойдешь?";
+    chapter1_4.type = DialogueType::CHOICE;
+    chapter1_4.choices = {
+        Choice("Через поле, хочу добраться по скорее в столицу", "-1"), 
+        Choice("Выйду на тракт, и попробую добраться вместе с проходящими каретами.", "-1")
+    };
+
 
     Dialogue lastDialogue;
     lastDialogue.id = "-1";
     lastDialogue.type = DialogueType::STORY;
 
-    mDialogues[dialogue7.id] = dialogue7;
-    mDialogues[dialogue1.id] = dialogue1;
-    mDialogues[dialogue2.id] = dialogue2;
-    mDialogues[dialogue3.id] = dialogue3;
-    mDialogues[dialogue4.id] = dialogue4;
-    mDialogues[dialogue5.id] = dialogue5;
-    mDialogues[dialogue6.id] = dialogue6;
+    mDialogues[prolog1.id] = prolog1;
+    mDialogues[prolog2.id] = prolog2;
+    mDialogues[prolog3.id] = prolog3;
+
+    mDialogues[chapter1_1.id] = chapter1_1;
+    mDialogues[chapter1_2.id] = chapter1_2;
+    mDialogues[chapter1_3.id] = chapter1_3;
+    mDialogues[chapter1_4.id] = chapter1_4;
+
     mDialogues[lastDialogue.id] = lastDialogue;
 
-    mCurrentDialogue = "7";
+    mCurrentDialogue = "prolog1";
     mLastDialogue = "-1";
 }
 
