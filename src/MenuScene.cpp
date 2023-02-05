@@ -29,7 +29,7 @@ void MenuScene::Update(float delta)
 
     if(mExitButton->IsPressed())
     {
-        SceneManager::Instance()->ChangeScene(END);
+        // SceneManager::Instance()->ChangeScene(END);
         return;
     }
 }

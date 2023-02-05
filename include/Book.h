@@ -47,8 +47,9 @@ class Book
         void FlipLeft();
         void FlipRight();
         void TheEnd();
+        void WaitNextPage();
 
-        bool WaitNextPage();
+        bool IsWaitNextPage();
         bool IsAnimating();
         bool IsOpen();
         bool IsInLastPage();

@@ -1,8 +1,8 @@
 #ifndef _RENDER_MANAGER_H_
 #define _RENDER_MANAGER_H_
 
-#define SCREEN_WIDTH 768
-#define SCREEN_HEIGHT 560
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 #include <string>
 #include <map>

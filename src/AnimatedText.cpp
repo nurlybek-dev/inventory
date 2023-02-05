@@ -75,6 +75,12 @@ std::string AnimatedText::GetText()
     return mText;
 }
 
+void AnimatedText::SkipAnimation()
+{
+    mRenderedText = mText;
+    mRenderedLetters = mText.length();
+}
+
 bool AnimatedText::End()
 {
     return mRenderedLetters == mText.length();

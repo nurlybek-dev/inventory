@@ -13,10 +13,12 @@ struct Choice
 };
 
 enum DialogueType {
+    START,
     STORY,
     CHOICE,
     COMBAT,
     ABILITY_CHECK,
+    END
 };
 
 struct Dialogue
@@ -45,9 +47,11 @@ class DialogueManager {
         bool IsEnd();
 
     private:
+        void Load(std::string path);
+
+    private:
         std::map<std::string, Dialogue> mDialogues;
         std::string mCurrentDialogue;
-        std::string mLastDialogue;
 };
 
 #endif

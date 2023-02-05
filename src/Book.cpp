@@ -5,8 +5,8 @@ Book::Book()
     mWordsPerPage = 90;
     mCharsPerPage = 400;
 
-    mLeftPage = {85, 110, 280, 16};
-    mRightPage = {415, 110, 280, 16};
+    mLeftPage = {85+270, 110+140, 280*2, 16*2};
+    mRightPage = {415+600, 110+140, 280*2, 16*2};
 
     mCurrentPage = 0;
     mPageCount = 0;
@@ -22,29 +22,46 @@ Book::Book()
     mEnd = false;
 
     // x = 823, y = 663
-    int x = SCREEN_WIDTH / 2 - 768/2;
-    int y = SCREEN_HEIGHT / 2 - 624/2 - 50;
-    int w = 768;
-    int h = 624;
+    int x = SCREEN_WIDTH / 2 - 768*2/2;
+    int y = SCREEN_HEIGHT / 2 - 624*2/2 - 50;
+    int w = 768*2;
+    int h = 624*2;
 
     mBookState = BookState::CLOSED;
     mNextTab = BookTab::STORY;
     mBookTab = BookTab::STORY;
 
-    mBookTabTextures[BookTab::STORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
-    mBookTabTextures[BookTab::PROFILE] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 3648, w, h});
-    mBookTabTextures[BookTab::STATUS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {1696, 3648, w, h});
-    mBookTabTextures[BookTab::INVENTORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {2512, 3648, w, h});
-    mBookTabTextures[BookTab::QUESTS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 3648, w, h});
-    mBookTabTextures[BookTab::SAVES] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 4368, w, h});
-    mBookTabTextures[BookTab::SETTINGS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 4368, w, h});
+    // mBookTabTextures[BookTab::STORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
+    // mBookTabTextures[BookTab::PROFILE] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 3648, w, h});
+    // mBookTabTextures[BookTab::STATUS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {1696, 3648, w, h});
+    // mBookTabTextures[BookTab::INVENTORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {2512, 3648, w, h});
+    // mBookTabTextures[BookTab::QUESTS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 3648, w, h});
+    // mBookTabTextures[BookTab::SAVES] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 4368, w, h});
+    // mBookTabTextures[BookTab::SETTINGS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {880, 4368, w, h});
 
-    mBookClosed = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h});
-    mBookOpened = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
-    mBookOpen = new Animation("Book open", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h}, 5, 48, 0.3, false, false, false);
-    mBookClose = new Animation("Book close", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 48, w, h}, 5, 48, 0.3, false, false, true);
-    mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {6592, 1488, w, h}, 9, 48, 0.6, false, false, true);
-    mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 1488, w, h}, 9, 48, 0.6, false, false, false);
+    // mBookClosed = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h});
+    // mBookOpened = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 3648, w, h});
+    // mBookOpen = new Animation("Book open", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 48, w, h}, 5, 48, 0.3, false, false, false);
+    // mBookClose = new Animation("Book close", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {3328, 48, w, h}, 5, 48, 0.3, false, false, true);
+    // mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {6592, 1488, w, h}, 9, 48, 0.6, false, false, true);
+    // mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1.png", {x, y, w, h}, {64, 1488, w, h}, 9, 48, 0.6, false, false, false);
+
+
+    mBookTabTextures[BookTab::STORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {128, 7296, w, h});
+    mBookTabTextures[BookTab::PROFILE] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {880*2, 3648*2, w, h});
+    mBookTabTextures[BookTab::STATUS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {1696*2, 3648*2, w, h});
+    mBookTabTextures[BookTab::INVENTORY] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {2512*2, 3648*2, w, h});
+    mBookTabTextures[BookTab::QUESTS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {3328*2, 3648*2, w, h});
+    mBookTabTextures[BookTab::SAVES] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 4368*2, w, h});
+    mBookTabTextures[BookTab::SETTINGS] = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {880*2, 4368*2, w, h});
+
+    mBookClosed = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 48*2, w, h});
+    mBookOpened = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 3648*2, w, h});
+    mBookOpen = new Animation("Book open", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 48*2, w, h}, 5, 48*2, 0.3, false, false, false);
+    mBookClose = new Animation("Book close", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {3328*2, 48*2, w, h}, 5, 48*2, 0.3, false, false, true);
+    mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {6592*2, 1488*2, w, h}, 9, 48*2, 0.6, false, false, true);
+    mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 1488*2, w, h}, 9, 48*2, 0.6, false, false, false);
+
 
     NewPage();
 }
@@ -217,7 +234,12 @@ void Book::TheEnd()
     }
 }
 
-bool Book::WaitNextPage()
+void Book::WaitNextPage()
+{
+    mWaitNextPage = true;
+}
+
+bool Book::IsWaitNextPage()
 {
     return mWaitNextPage;
 }
@@ -328,6 +350,10 @@ void Book::Input(SDL_Event event)
             // case SDLK_7:
             //     OpenTab(BookTab::SETTINGS);
             //     break;
+            case SDLK_SPACE:
+                if(!mLeftAnimatedText->End()) mLeftAnimatedText->SkipAnimation();
+                if(!mRightAnimatedText->End()) mRightAnimatedText->SkipAnimation();
+                break;
             case SDLK_RETURN:
                 if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
                     if(mWaitNextPage) {

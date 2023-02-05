@@ -19,6 +19,8 @@ class AnimatedText
         void AddText(const std::string& text, bool skipAnimation=false);
         std::string GetText();
         
+        void SkipAnimation();
+
         bool End();
     
     private:

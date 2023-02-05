@@ -7,7 +7,6 @@
 enum Scenes {
     MENU,
     GAME,
-    END
 };
 
 class SceneManager
