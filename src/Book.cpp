@@ -177,17 +177,19 @@ void Book::AddChoice(std::string text)
 
 void Book::NewPage()
 {
-    mLeftPageWords = 0;
-    mRightPageWords = 0;
-    mLeftAnimatedText->Clear();
-    mRightAnimatedText->Clear();
-    mIsWritingToLeft = true;
-    mWaitNextPage = false;
-    mPageCount++;
-    mCurrentPage = mPageCount;
-    Page page;
-    mPages[mCurrentPage] = page;
-    if(mCurrentPage > 1) FlipRight();
+    if(!mEnd) {
+        mLeftPageWords = 0;
+        mRightPageWords = 0;
+        mLeftAnimatedText->Clear();
+        mRightAnimatedText->Clear();
+        mIsWritingToLeft = true;
+        mWaitNextPage = false;
+        mPageCount++;
+        mCurrentPage = mPageCount;
+        Page page;
+        mPages[mCurrentPage] = page;
+        if(mCurrentPage > 1) FlipRight();
+    }
 }
 
 void Book::PreviousPage()
@@ -356,12 +358,12 @@ void Book::Input(SDL_Event event)
                 break;
             case SDLK_RETURN:
                 if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
-                    if(mWaitNextPage) {
-                        NewPage();
-                    }
-                    else if(mEnd) {
+                    if(mEnd) {
                         mBookClose->Play();
                         mBookState = BookState::CLOSING;
+                    }
+                    else if(mWaitNextPage) {
+                        NewPage();
                     }
                 }
                 break;

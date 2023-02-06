@@ -63,7 +63,15 @@ void DialogueManager::Load(std::string path)
         dialogue.id = (*it)["id"];
         dialogue.text = (*it)["text"];
         dialogue.nextID = (*it)["nextID"];
-        dialogue.type = static_cast<DialogueType>((int)(*it)["type"]);
+
+        std::string type = (*it)["type"];
+
+        if (type == "START") dialogue.type = DialogueType::START;
+        else if (type == "STORY") dialogue.type = DialogueType::STORY;
+        else if (type == "CHOICE") dialogue.type = DialogueType::CHOICE;
+        else if (type == "COMBAT") dialogue.type = DialogueType::COMBAT;
+        else if (type == "ABILITY CHECK") dialogue.type = DialogueType::ABILITY_CHECK;
+        else if (type == "END") dialogue.type = DialogueType::END;
 
         for(json::iterator ic = (*it)["choices"].begin(); ic != (*it)["choices"].end(); ++ic) {
             dialogue.choices.push_back(Choice((*ic)["text"], (*ic)["nextID"]));
@@ -76,6 +84,5 @@ void DialogueManager::Load(std::string path)
         }
 
         std::cout << "Load " << dialogue.id << ". Type: " << dialogue.type  << ". NextID: " << dialogue.nextID << std::endl;
-
     }
 }
