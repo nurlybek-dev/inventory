@@ -55,9 +55,9 @@ def save():
             elif label == 'Text':
                 node_data['text'] = dpg.get_value(dpg_input)
             elif label == 'Choice':
+                choice_id = uuid.uuid4().hex
                 user_data = dpg.get_item_user_data(attribute)
                 if user_data and 'link_id' in user_data:
-                    choice_id = uuid.uuid4().hex
                     link_ids[attribute] = choice_id
                     link_id = dpg.get_item_user_data(attribute)['link_id']
                     value = dpg.get_item_children(link_id)[1][0]
@@ -87,7 +87,7 @@ def load():
     for node in data.get('dialogues', []):
         node_id = node.get('id')
         node_id, node_next_id, choice_ids = add_node(
-            None, None, node.get('pos'), node.get('id'), node.get('nextID'), node.get('type'), node.get('text'), node.get('choices')
+            None, None, {}, node.get('pos'), node.get('id'), node.get('nextID'), node.get('type'), node.get('text'), node.get('choices')
         )
         if 'uuid' in node:
             link_ids[node['uuid']] = node_id
@@ -95,7 +95,6 @@ def load():
             link_ids[node['link_id']] = node_next_id
         link_ids.update(choice_ids)
 
-    print(link_ids)
     for link in data.get('links', []):
         link_callback('Editor', (link_ids[link[0]], link_ids[link[1]]))
 
@@ -127,18 +126,17 @@ def delink_callback(sender, app_data):
     attr_1 = dpg.get_item_configuration(app_data)['attr_1']
     attr_2 = dpg.get_item_configuration(app_data)['attr_2']
 
-    print(dpg.get_item_children(attr_1)[1][0])
-
     # dpg.configure_item(dpg.get_item_children(attr_1)[1][0], enabled=True)
     # dpg.configure_item(dpg.get_item_children(attr_2)[1][0], enabled=True)
     # dpg.set_item_source(dpg.get_item_children(attr_1)[1][0], dpg.get_item_children(attr_1)[1][0])
     # dpg.set_item_source(dpg.get_item_children(attr_2)[1][0], dpg.get_item_children(attr_2)[1][0])
 
+    dpg.set_item_user_data(attr_1, {})
     dpg.delete_item(app_data)
 
 def add_choice(sender, app_data, user_data):
     node_choice = dpg.add_node_attribute(label="Choice", parent=user_data['node'], before=user_data['node_button'], attribute_type=dpg.mvNode_Attr_Output)
-    dpg.add_input_text(label="Choice", width=200, parent=node_choice, default_value=user_data.get('value', '') or '')
+    dpg.add_input_text(label="Choice", width=300, parent=node_choice, default_value=user_data.get('value', '') or '')
     return node_choice
 
 def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=None, text=None, choices=None):
@@ -155,10 +153,10 @@ def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=N
     node_text = dpg.add_node_attribute(label="Text", parent=node, attribute_type=dpg.mvNode_Attr_Static)
     node_button = dpg.add_node_attribute(label="Text", parent=node, attribute_type=dpg.mvNode_Attr_Static)
 
-    input_id = dpg.add_input_text(label="ID", width=200, parent=node_id, default_value=id or '')
-    input_next_id = dpg.add_input_text(label="Next ID", width=200, parent=node_next_id, default_value=nextID or '')
-    input_type = dpg.add_combo(label='Type', items=TYPES, width=200, parent=node_choice, default_value=type or '')
-    input_text = dpg.add_input_text(label="Text", multiline=True, width=200, height=150, parent=node_text, default_value=text or '')
+    input_id = dpg.add_input_text(label="ID", width=300, parent=node_id, default_value=id or '')
+    input_next_id = dpg.add_input_text(label="Next ID", width=300, parent=node_next_id, default_value=nextID or '')
+    input_type = dpg.add_combo(label='Type', items=TYPES, width=300, parent=node_choice, default_value=type or '')
+    input_text = dpg.add_input_text(label="Text", multiline=True, width=300, height=150, parent=node_text, default_value=text or '')
 
     choice_ids = {}
     if choices:
@@ -167,7 +165,7 @@ def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=N
             if 'id' in choice:
                 choice_ids[choice['id']] = c_id
 
-    dpg.add_button(label='+', width=200, parent=node_button, callback=add_choice, user_data={'node': node, 'node_button': node_button})
+    dpg.add_button(label='+', width=300, parent=node_button, callback=add_choice, user_data={'node': node, 'node_button': node_button})
 
     return node_id, node_next_id, choice_ids
 
@@ -190,7 +188,7 @@ dpg.bind_item_handler_registry("Primary Window", "widget handler")
 
 # dpg.show_documentation()
 # dpg.show_debug()
-dpg.show_imgui_demo()
+# dpg.show_imgui_demo()
 # dpg.show_font_manager()
 # dpg.show_item_registry()
 # dpg.setup_registries()
