@@ -1,9 +1,20 @@
-import json, uuid
+import json, uuid, shutil
 import dearpygui.dearpygui as dpg
 
 dpg.create_context()
 
 TYPES=['START', 'STORY', 'CHOICE', 'COMBAT', 'ABILITY CHECK', 'END']
+
+window_pos = [0, 0]
+delta = [0, 0]
+
+def update_window_pos(sender, app_data):
+    window_pos[0] -= delta[0]
+    window_pos[1] -= delta[1]
+
+def update_delta(sender, app_data):
+    delta[0] = app_data[1]
+    delta[1] = app_data[2]
 
 def save():
     childs = dpg.get_item_children('Editor')
@@ -73,10 +84,10 @@ def load():
         data = json.loads(f.read())
 
     link_ids = {}
-    for node in data['dialogues']:
-        node_id = node['id']
+    for node in data.get('dialogues', []):
+        node_id = node.get('id')
         node_id, node_next_id, choice_ids = add_node(
-            None, None, node['pos'], node['id'], node['nextID'], node['type'], node['text'], node['choices']
+            None, None, node.get('pos'), node.get('id'), node.get('nextID'), node.get('type'), node.get('text'), node.get('choices')
         )
         if 'uuid' in node:
             link_ids[node['uuid']] = node_id
@@ -85,12 +96,13 @@ def load():
         link_ids.update(choice_ids)
 
     print(link_ids)
-    for link in data['links']:
+    for link in data.get('links', []):
         link_callback('Editor', (link_ids[link[0]], link_ids[link[1]]))
 
 
 def export():
-    print('export')
+    save()
+    shutil.copyfile("data.json", "../assets/dialogue.json")
 
 # callback runs when user attempts to connect attributes
 def link_callback(sender, app_data):
@@ -129,7 +141,12 @@ def add_choice(sender, app_data, user_data):
     dpg.add_input_text(label="Choice", width=200, parent=node_choice, default_value=user_data.get('value', '') or '')
     return node_choice
 
-def add_node(sender, app_data, pos=None, id=None, nextID=None, type=None, text=None, choices=None):
+def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=None, text=None, choices=None):
+    if user_data.get('use_mouse_pos'):
+        pos = dpg.get_mouse_pos()
+        pos[0] += window_pos[0]
+        pos[1] += window_pos[1]
+
     node_pos = pos if pos is not None else [200, 200]
     node = dpg.add_node(label="Node", parent="Editor", pos=node_pos)
     node_id = dpg.add_node_attribute(label="ID", parent=node)
@@ -146,7 +163,9 @@ def add_node(sender, app_data, pos=None, id=None, nextID=None, type=None, text=N
     choice_ids = {}
     if choices:
         for choice in choices:
-            choice_ids[choice['id']] = add_choice(None, None, {'node': node, 'node_button': node_button, 'value': choice['text']})
+            c_id = add_choice(None, None, {'node': node, 'node_button': node_button, 'value': choice['text']})
+            if 'id' in choice:
+                choice_ids[choice['id']] = c_id
 
     dpg.add_button(label='+', width=200, parent=node_button, callback=add_choice, user_data={'node': node, 'node_button': node_button})
 
@@ -162,7 +181,16 @@ with dpg.font_registry():
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
         dpg.bind_font(font)
 
+with dpg.handler_registry():
+    dpg.add_mouse_click_handler(1, callback=add_node, user_data={'use_mouse_pos': True})
+    dpg.add_mouse_drag_handler(2, callback=update_delta)
+    dpg.add_mouse_release_handler(2, callback=update_window_pos)
+
+dpg.bind_item_handler_registry("Primary Window", "widget handler")
+
 # dpg.show_documentation()
+# dpg.show_debug()
+dpg.show_imgui_demo()
 # dpg.show_font_manager()
 # dpg.show_item_registry()
 # dpg.setup_registries()
