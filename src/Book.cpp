@@ -139,6 +139,7 @@ bool Book::IsTextFit(const std::string& text)
 
 void Book::AddText(std::string text)
 {
+    if(mLeftPageWords > 0) text = "\n" + text;
     std::vector<std::string> words;
     size_t count = Split(text, words, ' ');
 
@@ -168,16 +169,10 @@ void Book::AddText(std::string text)
     }
 }
 
-void Book::AddChoice(std::string text)
-{
-    if(!mEnd) {
-        AddText("\n" + text);
-    }
-}
-
 void Book::NewPage()
 {
     if(!mEnd) {
+        SDL_Log("New Page\n");
         mLeftPageWords = 0;
         mRightPageWords = 0;
         mLeftAnimatedText->Clear();
@@ -228,12 +223,7 @@ void Book::FlipRight()
 
 void Book::TheEnd()
 {
-    if(!mEnd) {
-        NewPage();
-        AddText("\n\n");
-        AddText("          THE END.         ");
-        mEnd = true;
-    }
+    mEnd = true;
 }
 
 void Book::WaitNextPage()
@@ -357,7 +347,7 @@ void Book::Input(SDL_Event event)
                 if(!mRightAnimatedText->End()) mRightAnimatedText->SkipAnimation();
                 break;
             case SDLK_RETURN:
-                if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
+                 if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
                     if(mEnd) {
                         mBookClose->Play();
                         mBookState = BookState::CLOSING;

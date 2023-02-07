@@ -52,65 +52,66 @@ void GameScene::Update(float delta)
 {
     mBook->Update(delta);
 
-    if(!mWaitChoice && mBook->IsOpen()) {
-        if(gDialogueManager->IsEnd() && !mBook->IsWaitNextPage()) {
-            mBook->TheEnd();
-        }
-        else {
-            int i=1;
-            std::string text;
-            switch (gDialogueManager->GetType())
-            {
-            case DialogueType::STORY:
-                if(mBook->IsAnimating()) {
-                    SDL_Log("Animating\n");
-                }
-                if(mBook->IsWaitNextPage()) {
-                    SDL_Log("IsWaitNextPage\n");
-                }
+    if(!gDialogueManager->IsEnd() && !mWaitChoice && mBook->IsOpen()) {
+        int i=1;
+        std::string text;
+        switch (gDialogueManager->GetType())
+        {
+        case DialogueType::COMBAT:
+        case DialogueType::STORY:
+            if(mBook->IsAnimating()) {
+                SDL_Log("Animating\n");
+            }
+            if(mBook->IsWaitNextPage()) {
+                SDL_Log("IsWaitNextPage\n");
+            }
 
-                if(!mBook->IsAnimating() && !mBook->IsWaitNextPage()) {
-                    text = gDialogueManager->GetText();
-                    if(mBook->IsTextFit(text)) {
-                        mBook->AddText(text);
-                        gDialogueManager->Next();
-
-                        if(gDialogueManager->IsEnd()) {
-                            mBook->WaitNextPage();
-                        }
-                    } else {
-                        mBook->WaitNextPage();
-                    }
-                }
-                break;
-            case DialogueType::CHOICE:
+            if(!mBook->IsAnimating() && !mBook->IsWaitNextPage()) {
                 text = gDialogueManager->GetText();
+                if(mBook->IsTextFit(text)) {
+                    mBook->AddText(text);
+                    gDialogueManager->Next();
+                } else {
+                    mBook->WaitNextPage();
+                }
+            }
+            break;
+        case DialogueType::CHOICE:
+            text = gDialogueManager->GetText();
+            mChoices.clear();
+            for(auto& c : gDialogueManager->GetChoices())
+            {
+                text += "\n" + std::to_string(i) + ". " + c.text;
+                i++;
+            }
+            if(mBook->IsTextFit(text)) {
+                mBook->AddText(gDialogueManager->GetText());
                 mChoices.clear();
+                i = 1;
                 for(auto& c : gDialogueManager->GetChoices())
                 {
-                    text += "\n" + std::to_string(i) + ". " + c.text;
+                    mBook->AddText(std::to_string(i) + ". " + c.text);
+                    mChoices.push_back(c);
                     i++;
                 }
-                if(mBook->IsTextFit(text)) {
-                    mBook->AddText(gDialogueManager->GetText());
-                    mChoices.clear();
-                    i = 1;
-                    for(auto& c : gDialogueManager->GetChoices())
-                    {
-                        mBook->AddChoice(std::to_string(i) + ". " + c.text);
-                        mChoices.push_back(c);
-                        i++;
-                    }
-                    mWaitChoice = true;
-                } else {
-                    mBook->NewPage();
-                }
-
-                break;
-            case DialogueType::COMBAT:
-            case DialogueType::ABILITY_CHECK:
-                break;
+                mWaitChoice = true;
+            } else {
+                mBook->NewPage();
             }
+            break;
+        case DialogueType::ABILITY_CHECK:
+            break;
+        case DialogueType::END:
+            // if(!mBook->IsAnimating() && !mBook->IsWaitNextPage()) {
+            //     text = gDialogueManager->GetText();
+            //     if(mBook->IsTextFit(text)) {
+            //         mBook->AddText(text);
+            //         mBook->TheEnd();
+            //     } else {
+            //         mBook->WaitNextPage();
+            //     }
+            // }
+            break;
         }
     }
 
@@ -159,18 +160,23 @@ void GameScene::Input(SDL_Event event)
         {
             auto sym = event.key.keysym.sym;
             if(sym >= SDLK_1 && sym <= SDLK_9 && sym - SDLK_1 <= mChoices.size() && !mBook->IsWaitNextPage() && !mBook->IsAnimating() && mBook->IsInLastPage()) {
-                SDL_Log("Choices: %d", sym - SDLK_1);
                 gDialogueManager->SelectChoice(sym - SDLK_1);
                 mWaitChoice = false;
 
-                std::string text = gDialogueManager->GetText();
-                int i=0;
-                for(auto& c : gDialogueManager->GetChoices())
-                {
-                    text += "\n" + std::to_string(i) + ". " + c.text;
-                    i++;
+                if(!gDialogueManager->IsEnd()) {
+                    std::string text = gDialogueManager->GetText();
+                    int i=0;
+                    for(auto& c : gDialogueManager->GetChoices())
+                    {
+                        text += "\n" + std::to_string(i) + ". " + c.text;
+                        i++;
+                    }
+                    if(!mBook->IsTextFit(text)) mBook->NewPage();
+                } else {
+                    mBook->NewPage();
+                    mBook->AddText(gDialogueManager->GetText());
+                    mBook->TheEnd();
                 }
-                if(!mBook->IsTextFit(text)) mBook->NewPage();
             }
         }
     }

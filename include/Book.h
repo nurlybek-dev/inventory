@@ -39,7 +39,6 @@ class Book
         bool IsTextFit(const std::string& text);
 
         void AddText(std::string text);
-        void AddChoice(std::string choice);
 
         void NewPage();
         void PreviousPage();

@@ -48,7 +48,6 @@ void DialogueManager::SelectChoice(int index)
 
 void DialogueManager::Next()
 {
-    std::cout << "Next: " << mDialogues[mCurrentDialogue].nextID << std::endl;
     mCurrentDialogue = mDialogues[mCurrentDialogue].nextID;
 }
 
