@@ -103,6 +103,13 @@ def export():
     save()
     shutil.copyfile("data.json", "../assets/dialogue.json")
 
+
+def delete_choice(sender, app_data, user_data):
+    dpg.delete_item(user_data['choice_id'])
+
+def delete_node(sender, app_data, user_data):
+    dpg.delete_item(user_data['node_id'])
+
 # callback runs when user attempts to connect attributes
 def link_callback(sender, app_data):
     # app_data -> (link_id1, link_id2)
@@ -136,7 +143,9 @@ def delink_callback(sender, app_data):
 
 def add_choice(sender, app_data, user_data):
     node_choice = dpg.add_node_attribute(label="Choice", parent=user_data['node'], before=user_data['node_button'], attribute_type=dpg.mvNode_Attr_Output)
-    dpg.add_input_text(label="Choice", width=300, parent=node_choice, default_value=user_data.get('value', '') or '')
+    with dpg.group(horizontal=True, parent=node_choice):
+        dpg.add_input_text(width=240, default_value=user_data.get('value', '') or '')
+        dpg.add_button(label="-", width=50, callback=delete_choice, user_data={'choice_id': node_choice})
     return node_choice
 
 def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=None, text=None, choices=None):
@@ -147,6 +156,7 @@ def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=N
 
     node_pos = pos if pos is not None else [200, 200]
     node = dpg.add_node(label="Node", parent="Editor", pos=node_pos)
+    node_delete_attr = dpg.add_node_attribute(parent=node, attribute_type=dpg.mvNode_Attr_Static)
     node_id = dpg.add_node_attribute(label="ID", parent=node)
     node_next_id = dpg.add_node_attribute(label="Next ID", parent=node, attribute_type=dpg.mvNode_Attr_Output)
     node_choice = dpg.add_node_attribute(label="Choice", parent=node, attribute_type=dpg.mvNode_Attr_Static)
@@ -166,7 +176,7 @@ def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=N
                 choice_ids[choice['id']] = c_id
 
     dpg.add_button(label='+', width=300, parent=node_button, callback=add_choice, user_data={'node': node, 'node_button': node_button})
-
+    dpg.add_button(label="-", width=50, parent=node_delete_attr, callback=delete_node, user_data={'node_id': node})
     return node_id, node_next_id, choice_ids
 
 with dpg.window(tag="Primary Window", width=400, height=400):
