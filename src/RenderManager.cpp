@@ -49,7 +49,7 @@ bool RenderManager::Init()
         success = false;
         SDL_Log("Error init SDL. SDL_Error: %s\n", SDL_GetError());
     } else {
-        SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
+        SDL_WindowFlags windowFlags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
         mWindow = SDL_CreateWindow("SDL BASE", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
         if(mWindow == nullptr)
         {

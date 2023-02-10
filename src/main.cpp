@@ -40,6 +40,9 @@ void loop() {
             if(event.type == SDL_QUIT) {
                 running = false;
             }
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+                running = false;
+            }
             gTooltip->Hide();
             int x = event.motion.x;
             int y = event.motion.y;
