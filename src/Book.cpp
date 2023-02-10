@@ -139,7 +139,6 @@ bool Book::IsTextFit(const std::string& text)
 
 void Book::AddText(std::string text)
 {
-    if(mLeftPageWords > 0) text = "\n" + text;
     std::vector<std::string> words;
     size_t count = Split(text, words, ' ');
 
@@ -171,20 +170,18 @@ void Book::AddText(std::string text)
 
 void Book::NewPage()
 {
-    if(!mEnd) {
-        SDL_Log("New Page\n");
-        mLeftPageWords = 0;
-        mRightPageWords = 0;
-        mLeftAnimatedText->Clear();
-        mRightAnimatedText->Clear();
-        mIsWritingToLeft = true;
-        mWaitNextPage = false;
-        mPageCount++;
-        mCurrentPage = mPageCount;
-        Page page;
-        mPages[mCurrentPage] = page;
-        if(mCurrentPage > 1) FlipRight();
-    }
+    SDL_Log("New Page\n");
+    mLeftPageWords = 0;
+    mRightPageWords = 0;
+    mLeftAnimatedText->Clear();
+    mRightAnimatedText->Clear();
+    mIsWritingToLeft = true;
+    mWaitNextPage = false;
+    mPageCount++;
+    mCurrentPage = mPageCount;
+    Page page;
+    mPages[mCurrentPage] = page;
+    if(mCurrentPage > 1) FlipRight();
 }
 
 void Book::PreviousPage()
@@ -223,7 +220,9 @@ void Book::FlipRight()
 
 void Book::TheEnd()
 {
-    mEnd = true;
+    if(!mEnd) {
+        mEnd = true;
+    }
 }
 
 void Book::WaitNextPage()
@@ -349,8 +348,8 @@ void Book::Input(SDL_Event event)
             case SDLK_RETURN:
                  if(mBookState == BookState::OPENED && mBookTab == BookTab::STORY) {
                     if(mEnd) {
-                        mBookClose->Play();
-                        mBookState = BookState::CLOSING;
+                        NewPage();
+                        AddText("The End.");
                     }
                     else if(mWaitNextPage) {
                         NewPage();

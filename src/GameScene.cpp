@@ -52,7 +52,9 @@ void GameScene::Update(float delta)
 {
     mBook->Update(delta);
 
-    if(!gDialogueManager->IsEnd() && !mWaitChoice && mBook->IsOpen()) {
+    if(gDialogueManager->IsEnd()) {
+        mBook->TheEnd();
+    } else if(!mWaitChoice && mBook->IsOpen()) {
         int i=1;
         std::string text;
         switch (gDialogueManager->GetType())
@@ -90,7 +92,7 @@ void GameScene::Update(float delta)
                 i = 1;
                 for(auto& c : gDialogueManager->GetChoices())
                 {
-                    mBook->AddText(std::to_string(i) + ". " + c.text);
+                    mBook->AddText("\n" + std::to_string(i) + ". " + c.text);
                     mChoices.push_back(c);
                     i++;
                 }
@@ -164,18 +166,7 @@ void GameScene::Input(SDL_Event event)
                 mWaitChoice = false;
 
                 if(!gDialogueManager->IsEnd()) {
-                    std::string text = gDialogueManager->GetText();
-                    int i=0;
-                    for(auto& c : gDialogueManager->GetChoices())
-                    {
-                        text += "\n" + std::to_string(i) + ". " + c.text;
-                        i++;
-                    }
-                    if(!mBook->IsTextFit(text)) mBook->NewPage();
-                } else {
                     mBook->NewPage();
-                    mBook->AddText(gDialogueManager->GetText());
-                    mBook->TheEnd();
                 }
             }
         }
