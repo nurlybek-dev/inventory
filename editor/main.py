@@ -34,6 +34,10 @@ def save():
                 continue
             dpg_input = attr_info['children'][1][0]
             label = dpg.get_item_label(dpg_input)
+            if label == 'group':
+                attr_info = dpg.get_item_info(dpg_input)
+                dpg_input = attr_info['children'][1][0]
+                label = dpg.get_item_label(dpg_input)
             if label == 'ID':
                 node_data['id'] = dpg.get_value(dpg_input)
                 node_data['uuid'] = uuid.uuid4().hex
@@ -74,8 +78,8 @@ def save():
     for link in data_links:
         data['links'].append([link_ids[link[0]], link_ids[link[1]]])
 
-    with open('data.json', 'w') as f:
-        f.write(json.dumps(data))
+    with open('data.json', 'w', encoding='utf8') as f:
+        f.write(json.dumps(data, indent=4, ensure_ascii=False))
 
 
 
@@ -143,8 +147,8 @@ def delink_callback(sender, app_data):
 
 def add_choice(sender, app_data, user_data):
     node_choice = dpg.add_node_attribute(label="Choice", parent=user_data['node'], before=user_data['node_button'], attribute_type=dpg.mvNode_Attr_Output)
-    with dpg.group(horizontal=True, parent=node_choice):
-        dpg.add_input_text(width=240, default_value=user_data.get('value', '') or '')
+    with dpg.group(label='group', horizontal=True, parent=node_choice):
+        dpg.add_input_text(label="Choice", width=240, default_value=user_data.get('value', '') or '')
         dpg.add_button(label="-", width=50, callback=delete_choice, user_data={'choice_id': node_choice})
     return node_choice
 
@@ -163,7 +167,7 @@ def add_node(sender, app_data, user_data, pos=None, id=None, nextID=None, type=N
     node_text = dpg.add_node_attribute(label="Text", parent=node, attribute_type=dpg.mvNode_Attr_Static)
     node_button = dpg.add_node_attribute(label="Text", parent=node, attribute_type=dpg.mvNode_Attr_Static)
 
-    input_id = dpg.add_input_text(label="ID", width=300, parent=node_id, default_value=id or '')
+    input_id = dpg.add_input_text(label="ID", width=300, parent=node_id, default_value=id or uuid.uuid4().hex)
     input_next_id = dpg.add_input_text(label="Next ID", width=300, parent=node_next_id, default_value=nextID or '')
     input_type = dpg.add_combo(label='Type', items=TYPES, width=300, parent=node_choice, default_value=type or '')
     input_text = dpg.add_input_text(label="Text", multiline=True, width=300, height=150, parent=node_text, default_value=text or '')
