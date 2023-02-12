@@ -26,6 +26,12 @@ Book::Book()
     int y = SCREEN_HEIGHT / 2 - 624*2/2 - 50;
     int w = 768*2;
     int h = 624*2;
+    // w = 506
+    // w = 253
+    mNextPageRect = {x+647-100, 885, 43, 28};
+    mPreviousPageRect = {x+184+100, 885, 43, 28};
+    mNextPageTexture = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", mNextPageRect, {400, 11264, 43, 28});
+    mPreviousPageTexture = new Texture("assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", mPreviousPageRect, {352, 11264, 43, 28});
 
     mBookState = BookState::CLOSED;
     mNextTab = BookTab::STORY;
@@ -68,6 +74,12 @@ Book::Book()
 
 Book::~Book()
 {
+    delete mNextPageTexture;
+    mNextPageTexture = nullptr;
+
+    delete mPreviousPageTexture;
+    mPreviousPageTexture = nullptr;
+
     delete mBookTabTextures[BookTab::STORY];
     delete mBookTabTextures[BookTab::PROFILE];
     delete mBookTabTextures[BookTab::STATUS];
@@ -294,13 +306,21 @@ void Book::Update(float delta)
 
 void Book::Input(SDL_Event event)
 {
+    int x = event.motion.x;
+    int y = event.motion.y;
     switch(mBookState)
     {
         case BookState::CLOSED:
             // mBookClosed->Input(event);
             break;
         case BookState::OPENED:
-            // mBookOpened->Input(event);
+            if(event.type == SDL_MOUSEBUTTONDOWN) {
+                if(x > mNextPageRect.x && x < mNextPageRect.x + mNextPageRect.w && y > mNextPageRect.y && y < mNextPageRect.y + mNextPageRect.h) {
+                    NextPage();
+                }  else if( x > mPreviousPageRect.x && x < mPreviousPageRect.x + mPreviousPageRect.w && y > mPreviousPageRect.y && y < mPreviousPageRect.y + mPreviousPageRect.h) {
+                    PreviousPage();
+                } 
+            }
             break;
         case BookState::OPENING:
             mBookOpen->Input(event);
@@ -395,12 +415,6 @@ void Book::Render()
     if(mBookState != BookState::CLOSED && mBookState != BookState::OPENING && mBookState != BookState::CLOSING)
     {
         mBookTabTextures[mBookTab]->Render();
-        if(mBookTab == BookTab::STORY) {
-            // if(mPages[mCurrentPage].leftPageText.length()) RenderManager::Instance()->RenderWrappedText(mPages[mCurrentPage].leftPageText, mLeftPage.x, mLeftPage.y, mLeftPage.w, mLeftPage.h);
-            // if(mPages[mCurrentPage].rightPageText.length()) RenderManager::Instance()->RenderWrappedText(mPages[mCurrentPage].rightPageText, mRightPage.x, mRightPage.y, mRightPage.w, mRightPage.h);
-            mLeftAnimatedText->Render();
-            mRightAnimatedText->Render();
-        }
     }
     switch(mBookState)
     {
@@ -408,8 +422,13 @@ void Book::Render()
             mBookClosed->Render();
             break;
         case BookState::OPENED:
-            // mBookTabTextures[mBookTab]->Render();
-            // mBookOpened->Render();
+            if(mBookTab == BookTab::STORY) {
+                mLeftAnimatedText->Render();
+                mRightAnimatedText->Render();
+
+                mNextPageTexture->Render();
+                mPreviousPageTexture->Render(); 
+            }
             break;
         case BookState::OPENING:
             mBookOpen->Render();

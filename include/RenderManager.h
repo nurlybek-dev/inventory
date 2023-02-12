@@ -34,6 +34,9 @@ class RenderManager
         SDL_Rect RenderWrappedText(std::string text, int x, int y, Uint32 wrapLength, int fontSize=16);
         TTF_Font* GetFont(std::string path, int size);
 
+
+        void SetWindowSize(int w, int h);
+
     private:
         static RenderManager* sInstance;
 

@@ -43,6 +43,15 @@ void loop() {
             if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
                 running = false;
             }
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_r) {
+                gRenderManager->SetWindowSize(1024, 768);
+            }
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_t) {
+                gRenderManager->SetWindowSize(500, 500);
+            }
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_e) {
+                gRenderManager->SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            }
             gTooltip->Hide();
             int x = event.motion.x;
             int y = event.motion.y;

@@ -90,6 +90,11 @@ class Book
         Texture* mBookClosed;
         Texture* mBookOpened;
 
+        SDL_Rect mNextPageRect;
+        SDL_Rect mPreviousPageRect;
+        Texture* mNextPageTexture;
+        Texture* mPreviousPageTexture;
+
         std::map<BookTab, Texture*> mBookTabTextures;
 
         Animation* mBookOpen;
