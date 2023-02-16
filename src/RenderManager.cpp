@@ -107,6 +107,18 @@ void RenderManager::DrawLine(int x1, int y1, int x2, int y2)
     SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 }
 
+void RenderManager::DrawRect(int x, int y, int width, int height)
+{
+    SDL_Rect rect = {x, y, width, height};
+    SDL_RenderDrawRect(mRenderer, &rect);
+}
+
+void RenderManager::DrawRect(SDL_Rect rect)
+{
+    int res = SDL_RenderDrawRect(mRenderer, &rect);
+    if(res != 0) SDL_Log("Error while DrawRect: %s\n", SDL_GetError());
+}
+
 SDL_Rect RenderManager::RenderText(std::string text, int x, int y, int fontSize)
 {
     SDL_Texture *newTexture = nullptr;

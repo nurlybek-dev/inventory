@@ -68,12 +68,16 @@ Book::Book()
     mFlipLeft = new Animation("Flip left", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {6592*2, 1488*2, w, h}, 9, 48*2, 0.6, false, false, true);
     mFlipRight = new Animation("Flip right", "assets/Updated Paper Book/2 Sprite Sheet/Png/1x2.png", {x, y, w, h}, {64*2, 1488*2, w, h}, 9, 48*2, 0.6, false, false, false);
 
+    mBookHeader = new Header("Book header hello test");
 
     NewPage();
 }
 
 Book::~Book()
 {
+    delete mBookHeader;
+    mBookHeader = nullptr;
+
     delete mNextPageTexture;
     mNextPageTexture = nullptr;
 
@@ -423,6 +427,7 @@ void Book::Render()
             break;
         case BookState::OPENED:
             if(mBookTab == BookTab::STORY) {
+                mBookHeader->Render();
                 mLeftAnimatedText->Render();
                 mRightAnimatedText->Render();
 

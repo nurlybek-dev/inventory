@@ -4,6 +4,7 @@
 #include <map>
 #include "Animation.h"
 #include "AnimatedText.h"
+#include "Header.h"
 
 struct Page {
     std::string leftPageText;
@@ -101,6 +102,8 @@ class Book
         Animation* mBookClose;
         Animation* mFlipLeft;
         Animation* mFlipRight;
+
+        Header* mBookHeader;
 };
 
 #endif
